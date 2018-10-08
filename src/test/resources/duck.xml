@@ -1,0 +1,26 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <!--  Created on Sun, 18 Jun 2017 04:39:48 GMT  -->
+  <ShortName>DuckDuckGo (POST|No Filter Or Ads|NewTab|Dark)</ShortName>
+  <Description>
+    DuckDuckGo (SSL Enabled, POST Instead Of GET, No Safe Filter Or Ads, Opens Results In A New Window, Uses Dark Theme)
+  </Description>
+  <Url type="text/html" method="post" template="https://duckduckgo.com/?kae=t&kl=us-en&kad=en_US&kp=-2&kz=-1&kn=1&k1=-1&kam=google-maps&kak=-1&kao=-1&kap=v69-5">
+    <Param name="kd" value="-1"/>
+    <Param name="k1" value="-1"/>
+    <Param name="kg" value="p"/>
+    <Param name="kl" value="-1"/>
+    <Param name="kp" value="-1"/>
+    <Param name="kn" value="1"/>
+    <Param name="q" value="{searchTerms}"/>
+  </Url>
+  <Url type="application/x-suggestions+json" template="https://ac.duckduckgo.com/ac/?q={searchTerms}&type=list"/>
+  <Image width="16" height="16">
+    https://mycroftproject.com/updateos.php/id0/duck_dark_newtab_iot.ico
+  </Image>
+  <Developer>DebSec</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>
+    https://duckduckgo.com/?kae=t&kl=us-en&kad=en_US&kp=-2&kz=-1&kn=1&k1=-1&kam=google-maps&kak=-1&kao=-1&kap=v69-5
+  </moz:SearchForm>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/duck_dark_newtab_iot.xml"/>
+</OpenSearchDescription>

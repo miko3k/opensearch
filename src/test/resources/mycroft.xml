@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Mycroft Project</ShortName> 
+  <Description>Mycroft Project: Sherlock &amp; OpenSearch Search Engine Plugins</Description>
+  <Url type="text/html" method="get" template="https://mycroftproject.com/search-engines.html?name={searchTerms}"/> 
+  <Contact>mail@mycroftproject.com</Contact>
+  <Image width="16" height="16">https://mycroftproject.com/updateos.php/id0/mycroft.ico</Image>
+  <Developer>Mycroft Project</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>https://mycroftproject.com/search-engines.html</moz:SearchForm>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/mycroft.xml"/>
+</OpenSearchDescription>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <!-- Created on Wed, 17 Jul 2013 16:59:48 GMT -->
+    <ShortName>Wiktionary (de)</ShortName>
+    <Description>Wiktionary (de)</Description>
+    <Url type="text/html" method="get" template="http://de.wiktionary.org//wiki/Spezial:Suche?search={searchTerms}"/>
+    <Url type="application/x-suggestions+json" template="https://de.wiktionary.org/w/api.php?action=opensearch&amp;search={searchTerms}"/>
+    <Contact>mail@mycroftproject.com</Contact>
+    <Image width="16" height="16">https://mycroftproject.com/updateos.php/id0/wiktionary-de.ico</Image>
+    <Developer>Mycroft Project</Developer>
+    <InputEncoding>UTF-8</InputEncoding>
+    <moz:SearchForm>http://de.wiktionary.org/</moz:SearchForm>
+    <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/wiktionary-de.xml"/>
+</OpenSearchDescription>

@@ -1,0 +1,14 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <ShortName>Duden online</ShortName>
+    <Description>Duden online</Description>
+    <Tags>rechtschreibung grammatik synonyme deutsch</Tags>
+    <Contact>kundenservice@duden.de</Contact>
+    <InputEncoding>UTF-8</InputEncoding>
+    <Image height="16" width="16" type="image/x-icon">
+        http://www.duden.de/duden-online-theme/images/favicon.ico
+    </Image>
+    <Url type="text/html" method="GET" template="http://www.duden.de/suchen/dudenonline/{searchTerms}?utm_source=widget&utm_medium=browsersuche&utm_campaign=browsersuche"/>
+    <SearchForm>http://www.duden.de/</SearchForm>
+    <SyndicationRight>open</SyndicationRight>
+    <Language>de-de</Language>
+</OpenSearchDescription>

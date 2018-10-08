@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/" xmlns:na="FOOBAR">
+  <Url rel="self" template="https://mycroftproject.com/updateos.php/id0/mycroft.xml"/>
+  <Url rel="self" template="https://mycroftproject.com/updateos.php/id0/mycro{AA}{na:x}{}{f}t.xml"/>
+  <Url rel="self" template="https://mycroftproject.com/updateos.php/id0/mycro{a?}ft.xml"/>
+  <Url rel="self" template="https://mycroftproject.com/updateos.php/id0/mycroft.xml"/>
+  <Url rel="self" template="https://mycroftproject.com/updateos.php/id0/mycroft.xml"/>
+</OpenSearchDescription>
