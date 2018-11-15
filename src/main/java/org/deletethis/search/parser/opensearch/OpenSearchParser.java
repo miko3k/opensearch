@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class OpenSearchParser implements ElementParser {
+class OpenSearchParser implements ElementParser {
     private String shortName;
     private String description;
     private Template selfUrl;

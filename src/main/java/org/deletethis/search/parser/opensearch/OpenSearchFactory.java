@@ -17,8 +17,7 @@ public class OpenSearchFactory {
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
-            SAXParser saxParser = null;
-            saxParser = spf.newSAXParser();
+            SAXParser saxParser = spf.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
             xmlReader.setContentHandler(new MyParser(initialElementParser));
             xmlReader.parse(new InputSource(is));

@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class TestSuite1 {
+public class SomeTests {
     private InputStream res(String name) {
-        InputStream in = TestSuite1.class.getResourceAsStream(name);
+        InputStream in = SomeTests.class.getResourceAsStream(name);
         if(in == null)
             throw new IllegalStateException("Unable to open stream: " + name);
         return in;

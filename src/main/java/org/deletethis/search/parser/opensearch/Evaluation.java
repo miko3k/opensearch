@@ -2,7 +2,7 @@ package org.deletethis.search.parser.opensearch;
 
 import java.nio.charset.Charset;
 
-public class Evaluation {
+class Evaluation {
     private final String searchTerms, suggestionPrefix, suggestionIndex;
     private final Charset inputEncoding, outputEncoding;
 

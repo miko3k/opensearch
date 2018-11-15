@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
-public class RootParser implements ElementParser {
+class RootParser implements ElementParser {
     private OpenSearchParser theParser;
 
     @Override

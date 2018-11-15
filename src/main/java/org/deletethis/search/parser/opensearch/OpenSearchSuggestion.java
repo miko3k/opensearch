@@ -5,7 +5,7 @@ import org.deletethis.search.parser.Suggestion;
 import java.util.Objects;
 import java.util.Optional;
 
-public class OpenSearchSuggestion implements Suggestion {
+class OpenSearchSuggestion implements Suggestion {
 
     private final String value;
     private final String url;

@@ -2,7 +2,7 @@ package org.deletethis.search.parser.opensearch;
 
 import java.util.function.Consumer;
 
-public class TextParser implements ElementParser {
+class TextParser implements ElementParser {
     private final StringBuilder bld = new StringBuilder();
     private final Consumer<String> consumer;
 

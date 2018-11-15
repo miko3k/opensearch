@@ -9,7 +9,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.*;
 
-public class OpenSearch implements SearchEngine {
+class OpenSearch implements SearchEngine {
     private static JsonProvider jsonProvider;
 
     private final String shortName;

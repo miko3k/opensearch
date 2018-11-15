@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
-public interface ElementParser {
+interface ElementParser {
     ElementParser NOP = new ElementParser() {
         @Override
         public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) {

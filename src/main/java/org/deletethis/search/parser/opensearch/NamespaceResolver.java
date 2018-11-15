@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
 /** Wrapper around {@link org.xml.sax.helpers.NamespaceSupport} to improve testability */
-public interface NamespaceResolver {
+interface NamespaceResolver {
     String getURI(String prefix);
 }

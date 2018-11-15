@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Template implements Evaluable {
+final class Template implements Evaluable {
     private static class TemplateParameter {
         private final int begin;
         private final int end;
@@ -48,7 +48,7 @@ class Template implements Evaluable {
      *
      *  Colon is allowed as a part of both of prefix and local name. Which is weird. We split at first colon.
      */
-    private final static Pattern PATTERN = Pattern.compile("\\{(([-._~a-zA-Z00-9]|(%[0-9a-fA-F]{2})|[!$&'(/)*+,;=]|[:@])*\\??)}");
+    private final static Pattern PATTERN = Pattern.compile("\\{(([-._~a-zA-Z00-9]|(%[0-9a-fA-F]{2})|[!$&'(/)*+,;=]|[:@])*\\??)[}]");
 
     Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws OpenSearchParseError {
         this.template = template;
