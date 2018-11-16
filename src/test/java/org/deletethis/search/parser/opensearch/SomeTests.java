@@ -54,6 +54,20 @@ public class SomeTests {
     }
 
     @Test
+    public void googlesuggestions2() throws JsonSuggestionParseError {
+        SuggestionParser suggestionParser = new SuggestionParser(Json.createParser(res("googlesuggestions2.json")), "hello world");
+        List<Suggestion> suggestions = suggestionParser.parseSuggestions();
+
+        OpenSearchSuggestion oss = (OpenSearchSuggestion) suggestions.get(1);
+        Assert.assertEquals(Optional.empty(), oss.getDescription());
+        Assert.assertEquals(Optional.empty(), oss.getUrl());
+        Assert.assertEquals("hello world java", oss.getValue());
+        Assert.assertEquals("1", oss.getSuggestionIndex());
+        Assert.assertEquals("hello world", oss.getSuggestionPrefix());
+    }
+
+
+    @Test
     public void wikisuggestions() throws JsonSuggestionParseError {
         SuggestionParser suggestionParser = new SuggestionParser(Json.createParser(res("desuggestions.json")), "de");
         List<Suggestion> suggestions = suggestionParser.parseSuggestions();

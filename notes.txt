@@ -1,0 +1,7 @@
+google:fieldtrialtriggered
+------------------------------
+
+https://chromium.googlesource.com/chromium/chromium/+/4e693dd4033eb7b76787d3d389ceed3531c584b5/chrome/browser/autocomplete/zero_suggest_provider.cc
+
+Standard search for German google is:
+    {google:baseURL}search?q=%s&{google:RLZ}{google:originalQueryForSuggestion}{google:assistedQueryStats}{google:searchFieldtrialParameter}{google:bookmarkBarPinned}{google:searchClient}{google:sourceId}{google:instantExtendedEnabledParameter}{google:omniboxStartMarginParameter}{google:contextualSearchVersion}ie={inputEncoding
