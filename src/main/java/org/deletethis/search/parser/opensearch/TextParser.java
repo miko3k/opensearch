@@ -1,12 +1,17 @@
 package org.deletethis.search.parser.opensearch;
 
-import java.util.function.Consumer;
+import org.deletethis.search.parser.EngineParseException;
 
 class TextParser implements ElementParser {
     private final StringBuilder bld = new StringBuilder();
-    private final Consumer<String> consumer;
+    private final TextConsumer consumer;
 
-    public TextParser(Consumer<String> consumer) {
+    public interface TextConsumer {
+        void accept(String value) throws EngineParseException;
+    }
+
+
+    public TextParser(TextConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -16,7 +21,7 @@ class TextParser implements ElementParser {
     }
 
     @Override
-    public void endElement() throws OpenSearchParseError {
+    public void endElement() throws EngineParseException {
         consumer.accept(bld.toString());
 
     }

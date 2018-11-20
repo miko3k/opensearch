@@ -11,5 +11,5 @@ public interface SearchEngine {
     List<String> getIconUrls();
     boolean supportsSuggestions();
     SuggestionRequest getSuggestions(SearchQuery search);
-    Map<Property, Value> getProperties();
+    Map<PropertyName, PropertyValue> getProperties();
 }

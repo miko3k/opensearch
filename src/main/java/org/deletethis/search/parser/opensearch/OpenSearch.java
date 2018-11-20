@@ -2,7 +2,6 @@ package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.*;
 
-import javax.json.Json;
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonParser;
 import java.io.StringReader;
@@ -27,7 +26,7 @@ class OpenSearch implements SearchEngine {
     private final List<String> languages;
     private final List<Charset> inputEncodings;
     private final List<Charset> outputEncodings;
-    private transient Map<Property, Value> cachedProperties;
+    private transient Map<PropertyName, PropertyValue> cachedProperties;
 
 
     public OpenSearch(String shortName, String description, Template selfUrl, Template resultsUrl, Template suggestionsUrl, String contact, List<String> tags, String longName, List<String> images, String developer, String attribution, Boolean adultContent, List<String> languages, List<Charset> inputEncodings, List<Charset> outputEncodings) {
@@ -77,11 +76,11 @@ class OpenSearch implements SearchEngine {
         return shortName;
     }
 
-    private Evaluation createEvaluation(String searchTerms, String suggestionPrefix, String suggestionIndex) {
-        return new Evaluation(searchTerms, inputEncodings.get(0), outputEncodings.get(0), suggestionPrefix, suggestionIndex);
+    private EvaluationContext createEvaluation(String searchTerms, String suggestionPrefix, String suggestionIndex) {
+        return new EvaluationContext(searchTerms, inputEncodings.get(0), outputEncodings.get(0), suggestionPrefix, suggestionIndex);
     }
 
-    private Evaluation createEvaluation(SearchQuery search) {
+    private EvaluationContext createEvaluation(SearchQuery search) {
         if(search.getSuggestion() != null) {
             OpenSearchSuggestion oss = (OpenSearchSuggestion) search.getSuggestion();
             return createEvaluation(oss.getValue(), oss.getSuggestionPrefix(), oss.getSuggestionIndex());
@@ -115,7 +114,7 @@ class OpenSearch implements SearchEngine {
         return suggestionsUrl != null;
     }
 
-    private List<Suggestion> parseSuggestions(String prefix, String body) throws SuggestionParseError {
+    private List<Suggestion> parseSuggestions(String prefix, String body) throws SuggestionParseException {
         if(jsonProvider == null) {
             jsonProvider = JsonProvider.provider();
         }
@@ -127,8 +126,8 @@ class OpenSearch implements SearchEngine {
 
         try {
             return suggestionParser.parseSuggestions();
-        } catch (JsonSuggestionParseError ex) {
-            throw new SuggestionParseError(parser.getLocation() + ": " + ex.getMessage(), ex);
+        } catch (SuggestionParseException ex) {
+            throw new SuggestionParseException(parser.getLocation() + ": " + ex.getMessage(), ex);
         }
     }
 
@@ -149,33 +148,33 @@ class OpenSearch implements SearchEngine {
             }
 
             @Override
-            public List<Suggestion> parseResult(String body) throws SuggestionParseError {
+            public List<Suggestion> parseResult(String body) throws SuggestionParseException {
                 return parseSuggestions(searchQuery.getAnyValue(), body);
             }
         };
     }
 
-    private Map<Property, Value> prepareProperties() {
-        Map<Property, Value> result = new LinkedHashMap<>();
+    private Map<PropertyName, PropertyValue> prepareProperties() {
+        Map<PropertyName, PropertyValue> result = new LinkedHashMap<>();
 
         if(longName != null)
-            result.put(Property.LONG_NAME, new StringValue(longName));
+            result.put(PropertyName.LONG_NAME, new PropertyValue.Literal(longName));
         if(description != null)
-            result.put(Property.DESCRIPTION, new StringValue(description));
+            result.put(PropertyName.DESCRIPTION, new PropertyValue.Literal(description));
         if(contact != null)
-            result.put(Property.CONTACT, new StringValue(contact));
+            result.put(PropertyName.CONTACT, new PropertyValue.Literal(contact));
         if(developer != null)
-            result.put(Property.DEVELOPER, new StringValue(developer));
+            result.put(PropertyName.DEVELOPER, new PropertyValue.Literal(developer));
         if(attribution != null)
-            result.put(Property.ATTRIBUTION, new StringValue(attribution));
+            result.put(PropertyName.ATTRIBUTION, new PropertyValue.Literal(attribution));
         if(adultContent != null)
-            result.put(Property.ADULT_CONTENT, adultContent ? PredefinedValue.YES : PredefinedValue.NO);
+            result.put(PropertyName.ADULT_CONTENT, adultContent ? PropertyValue.Predefined.YES : PropertyValue.Predefined.NO);
 
         return result;
     }
 
     @Override
-    public Map<Property, Value> getProperties() {
+    public Map<PropertyName, PropertyValue> getProperties() {
         if(cachedProperties == null) {
             cachedProperties = prepareProperties();
         }

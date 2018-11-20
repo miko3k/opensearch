@@ -20,19 +20,19 @@ public class SomeTests {
     }
 
     @Test
-    public void googleus() throws IOException {
+    public void googleus() throws IOException, EngineParseException {
         SearchEngine google = OpenSearchFactory.loadOpenSearch(res("google.xml"));
 
         Assert.assertEquals("Google US", google.getName());
         Assert.assertTrue(google.supportsSuggestions());
-        Map<Property, Value> properties = google.getProperties();
+        Map<PropertyName, PropertyValue> properties = google.getProperties();
 
-        Assert.assertEquals(new StringValue("Google US"), properties.get(Property.DESCRIPTION));
-        Assert.assertEquals(new StringValue("mycroft.mozdev.org@googlemail.com"), properties.get(Property.CONTACT));
-        Assert.assertNull(properties.get(Property.LONG_NAME));
-        Assert.assertEquals(new StringValue("Mycroft Project"), properties.get(Property.DEVELOPER));
-        Assert.assertNull(properties.get(Property.ATTRIBUTION));
-        Assert.assertNull(properties.get(Property.ADULT_CONTENT));
+        Assert.assertEquals(new PropertyValue.Literal("Google US"), properties.get(PropertyName.DESCRIPTION));
+        Assert.assertEquals(new PropertyValue.Literal("mycroft.mozdev.org@googlemail.com"), properties.get(PropertyName.CONTACT));
+        Assert.assertNull(properties.get(PropertyName.LONG_NAME));
+        Assert.assertEquals(new PropertyValue.Literal("Mycroft Project"), properties.get(PropertyName.DEVELOPER));
+        Assert.assertNull(properties.get(PropertyName.ATTRIBUTION));
+        Assert.assertNull(properties.get(PropertyName.ADULT_CONTENT));
 
         Assert.assertEquals(Optional.of("https://mycroftproject.com/updateos.php/id0/googleintl.xml"), google.getUpdateUrl());
         Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchUrl(SearchQuery.of("hello world")));
@@ -41,7 +41,7 @@ public class SomeTests {
     }
 
     @Test
-    public void googlesuggestions() throws JsonSuggestionParseError {
+    public void googlesuggestions() throws SuggestionParseException {
         SuggestionParser suggestionParser = new SuggestionParser(Json.createParser(res("googlesuggestions.json")), "hello world");
         List<Suggestion> suggestions = suggestionParser.parseSuggestions();
 
@@ -54,21 +54,19 @@ public class SomeTests {
     }
 
     @Test
-    public void googlesuggestions2() throws JsonSuggestionParseError {
+    public void googlesuggestions2() throws SuggestionParseException {
         SuggestionParser suggestionParser = new SuggestionParser(Json.createParser(res("googlesuggestions2.json")), "hello world");
         List<Suggestion> suggestions = suggestionParser.parseSuggestions();
 
-        OpenSearchSuggestion oss = (OpenSearchSuggestion) suggestions.get(1);
+        OpenSearchSuggestion oss = (OpenSearchSuggestion) suggestions.get(2);
         Assert.assertEquals(Optional.empty(), oss.getDescription());
         Assert.assertEquals(Optional.empty(), oss.getUrl());
-        Assert.assertEquals("hello world java", oss.getValue());
-        Assert.assertEquals("1", oss.getSuggestionIndex());
-        Assert.assertEquals("hello world", oss.getSuggestionPrefix());
+        Assert.assertEquals("fgaddon", oss.getValue());
     }
 
 
     @Test
-    public void wikisuggestions() throws JsonSuggestionParseError {
+    public void wikisuggestions() throws SuggestionParseException {
         SuggestionParser suggestionParser = new SuggestionParser(Json.createParser(res("desuggestions.json")), "de");
         List<Suggestion> suggestions = suggestionParser.parseSuggestions();
 

@@ -1,9 +1,9 @@
 package org.deletethis.search.parser.opensearch;
 
 interface Evaluable {
-    String evaluate(Evaluation evaluation);
+    String evaluate(EvaluationContext evaluationContext);
 
     static Evaluable of(String str) {
-        return evaluation -> str;
+        return evaluationContext -> str;
     }
 }

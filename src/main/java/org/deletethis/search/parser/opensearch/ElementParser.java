@@ -1,5 +1,7 @@
 package org.deletethis.search.parser.opensearch;
 
+import org.deletethis.search.parser.EngineParseException;
+
 interface ElementParser {
     ElementParser NOP = new ElementParser() {
         @Override
@@ -8,7 +10,7 @@ interface ElementParser {
         }
     };
 
-    ElementParser startElement(String uri, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws OpenSearchParseError;
-    default void endElement() throws OpenSearchParseError { }
+    ElementParser startElement(String uri, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException;
+    default void endElement() throws EngineParseException { }
     default void text(char[] ch, int start, int length) {}
 }

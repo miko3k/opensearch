@@ -1,5 +1,8 @@
 package org.deletethis.search.parser.opensearch;
 
+import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.ErrorCode;
+
 import javax.xml.namespace.QName;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -50,7 +53,7 @@ final class Template implements Evaluable {
      */
     private final static Pattern PATTERN = Pattern.compile("\\{(([-._~a-zA-Z00-9]|(%[0-9a-fA-F]{2})|[!$&'(/)*+,;=]|[:@])*\\??)[}]");
 
-    Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws OpenSearchParseError {
+    Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws EngineParseException {
         this.template = template;
         this.parameters = new ArrayList<>();
 
@@ -72,14 +75,14 @@ final class Template implements Evaluable {
                 ns = namespaceResolver.getURI(prefix);
 
                 if(ns == null) {
-                    throw new OpenSearchParseError("No namespace is registered with prefix: " + prefix);
+                    throw new EngineParseException(ErrorCode.BAD_SYNTAX, "No namespace is registered with prefix: " + prefix);
                 }
             }
             QName name = new QName(ns, matched);
             Evaluable ev = paramResolver.apply(name);
             if(ev == null) {
                 if(required) {
-                    throw new OpenSearchParseError("Unknown parameter: " + name);
+                    throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Unknown parameter: " + name);
                 } else {
                     ev = Evaluable.of("");
                 }
@@ -90,16 +93,16 @@ final class Template implements Evaluable {
     }
 
     @Override
-    public String evaluate(Evaluation evaluation) {
+    public String evaluate(EvaluationContext evaluationContext) {
         StringBuilder bld = new StringBuilder();
         int last = 0;
         for(TemplateParameter p: parameters) {
             if(last != p.begin) {
                 bld.append(template, last, p.begin);
             }
-            String ev = p.value.evaluate(evaluation);
+            String ev = p.value.evaluate(evaluationContext);
             try {
-                ev = URLEncoder.encode(ev, evaluation.getInputEncoding().toString());
+                ev = URLEncoder.encode(ev, evaluationContext.getInputEncoding().toString());
             } catch (UnsupportedEncodingException e) {
                 throw new IllegalStateException(e);
             }

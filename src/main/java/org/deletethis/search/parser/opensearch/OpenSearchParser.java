@@ -1,5 +1,8 @@
 package org.deletethis.search.parser.opensearch;
 
+import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.ErrorCode;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,13 +40,13 @@ class OpenSearchParser implements ElementParser {
             "false", "FALSE", "0", "no", "NO"
     ));
 
-    private void checkSyndicationRight(String s) throws OpenSearchParseError {
+    private void checkSyndicationRight(String s) throws EngineParseException {
         if("private".equals(s) || "closed".equals(s)) {
-            throw new OpenSearchParseError("Syndication right does not allow usage of this plugin");
+            throw new EngineParseException(ErrorCode.USAGE_NOT_ALLOWED, "Syndication right does not allow usage of this plugin");
         }
     }
 
-    private ElementParser url(AttributeResolver attributes, NamespaceResolver namespaces) throws OpenSearchParseError {
+    private ElementParser url(AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
         String type = attributes.getValue("type");
         String rel = attributes.getValue("rel");
         String method = attributes.getValue(Constants.PARAMETERS_NAMESPACE, "method");
@@ -53,7 +56,9 @@ class OpenSearchParser implements ElementParser {
             method = attributes.getValue("method");
         }
 
-        if(type == null) throw new OpenSearchParseError("Url without type");
+        if(type == null) {
+            return NOP;
+        }
 
         if(method != null && !"GET".equalsIgnoreCase(method)) {
             hasNonGet = true;
@@ -80,7 +85,7 @@ class OpenSearchParser implements ElementParser {
     }
 
     @Override
-    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws OpenSearchParseError {
+    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
         if(!namespace.equals(Constants.MAIN_NAMESPACE))
             return NOP;
 
@@ -101,17 +106,17 @@ class OpenSearchParser implements ElementParser {
             case "Language": return new TextParser((s) -> languages.add(s));
             case "InputEncoding": return new TextParser((s) -> inputEncodings.add(Charset.forName(s)));
             case "OutputEncoding": return new TextParser((s) -> outputEncodings.add(Charset.forName(s)));
-            default: throw new OpenSearchParseError("Unrecognized element");
+            default: return NOP;
 
         }
     }
 
-    OpenSearch getOpenSearch() throws OpenSearchParseError {
+    OpenSearch getOpenSearch() throws EngineParseException {
         if(resultsUrl == null) {
             if(hasNonGet) {
-                throw new OpenSearchParseError("Unsupported method, only GET is supported");
+                throw new EngineParseException(ErrorCode.INVALID_METHOD, "Unsupported method, only GET is supported");
             } else {
-                throw new OpenSearchParseError("No URL specified");
+                throw new EngineParseException(ErrorCode.NO_URL, "No URL specified");
             }
         }
         if(languages.isEmpty()) languages.add("*");

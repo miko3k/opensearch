@@ -1,5 +1,8 @@
 package org.deletethis.search.parser.opensearch;
 
+import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.ErrorCode;
+
 import javax.xml.namespace.QName;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -16,7 +19,7 @@ class OpenSearchUrlParser implements ElementParser {
         public Evaluable apply(QName qName) {
             if(qName.getNamespaceURI().isEmpty() || qName.getNamespaceURI().equals(Constants.MAIN_NAMESPACE)) {
                 switch (qName.getLocalPart()) {
-                    case "searchTerms": return Evaluation::getSearchTerms;
+                    case "searchTerms": return EvaluationContext::getSearchTerms;
                     case "count": return Evaluable.of("50");
                     case "startIndex": return indexOffset == null ? null : Evaluable.of(indexOffset);
                     case "startPage": return pageOffset == null ? null : Evaluable.of(pageOffset);
@@ -28,8 +31,8 @@ class OpenSearchUrlParser implements ElementParser {
             }
             if(qName.getNamespaceURI().equals(Constants.PARAMETERS_NAMESPACE)) {
                 switch (qName.getLocalPart()) {
-                    case "suggestionPrefix": return Evaluation::getSuggestionPrefix;
-                    case "suggestionIndex": return Evaluation::getSuggestionIndex;
+                    case "suggestionPrefix": return EvaluationContext::getSuggestionPrefix;
+                    case "suggestionIndex": return EvaluationContext::getSuggestionIndex;
                     default: return null;
                 }
             }
@@ -37,7 +40,7 @@ class OpenSearchUrlParser implements ElementParser {
         }
     };
 
-    OpenSearchUrlParser(AttributeResolver attributes, NamespaceResolver namespaces, Consumer<Template> urlConsumer) throws OpenSearchParseError {
+    OpenSearchUrlParser(AttributeResolver attributes, NamespaceResolver namespaces, Consumer<Template> urlConsumer) throws EngineParseException {
         this.urlConsumer = urlConsumer;
         this.namespaceResolver = namespaces;
 
@@ -45,13 +48,13 @@ class OpenSearchUrlParser implements ElementParser {
         this.indexOffset = attributes.getValue("indexOffset");
         this.pageOffset = attributes.getValue("pageOffset");
 
-        if(template == null) throw new OpenSearchParseError("Url without template");
+        if(template == null) throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Url without template");
         if(indexOffset == null) indexOffset = "1";
         if(pageOffset == null) pageOffset = "1";
     }
 
     @Override
-    public void endElement() {
+    public void endElement() throws EngineParseException {
         urlConsumer.accept(new Template(template, namespaceResolver, paramResolver));
     }
 

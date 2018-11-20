@@ -1,6 +1,7 @@
 package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.Suggestion;
+import org.deletethis.search.parser.SuggestionParseException;
 
 import javax.json.stream.JsonParser;
 import java.util.ArrayList;
@@ -16,20 +17,38 @@ class SuggestionParser {
         this.prefix = prefix;
     }
 
-    private void swallow(JsonParser.Event wanted) throws JsonSuggestionParseError {
+    private void swallow(JsonParser.Event wanted) throws SuggestionParseException {
         JsonParser.Event next = parser.next();
         if(next != wanted) {
-            throw new JsonSuggestionParseError("Parse error: want " + wanted + ", have " + next);
+            throw new SuggestionParseException("Parse error: want " + wanted + ", have " + next);
         }
     }
 
-    private List<String> readStrings() throws JsonSuggestionParseError {
+    private void skipObject() {
+        while(true) {
+            JsonParser.Event next = parser.next();
+            if(next == JsonParser.Event.START_OBJECT) {
+                skipObject();
+                next = parser.next();
+            }
+            if(next == JsonParser.Event.END_OBJECT) {
+                return;
+            }
+        }
+
+    }
+
+    private List<String> readStrings() throws SuggestionParseException {
         JsonParser.Event next = parser.next();
+        if(next == JsonParser.Event.START_OBJECT) {
+            skipObject();
+            next = parser.next();
+        }
         if(next == JsonParser.Event.END_ARRAY)
             return null;
 
         if(next != JsonParser.Event.START_ARRAY) {
-            throw new JsonSuggestionParseError("Parse error: want start or end of array, have " + next);
+            throw new SuggestionParseException("Parse error: want start or end of array, have " + next);
         }
         List<String> result = new ArrayList<>(32);
 
@@ -37,7 +56,7 @@ class SuggestionParser {
             result.add(parser.getString());
         }
         if(next != JsonParser.Event.END_ARRAY) {
-            throw new JsonSuggestionParseError("Parse error: want end of array, have " + next);
+            throw new SuggestionParseException("Parse error: want end of array, have " + next);
         }
         return result;
 
@@ -55,14 +74,14 @@ class SuggestionParser {
         return s;
     }
 
-    List<Suggestion> parseSuggestions() throws JsonSuggestionParseError{
+    List<Suggestion> parseSuggestions() throws SuggestionParseException{
         try {
             swallow(JsonParser.Event.START_ARRAY);
             swallow(JsonParser.Event.VALUE_STRING);
 
             List<String> completions = readStrings();
             if(completions == null) {
-                throw new OpenSearchParseError("No completions");
+                throw new SuggestionParseException("No completions");
             }
             List<String> descriptions = readStrings();
             List<String> urls = descriptions == null ? null : readStrings();
@@ -81,7 +100,7 @@ class SuggestionParser {
             }
             return result;
         } catch(NoSuchElementException ex) {
-            throw new JsonSuggestionParseError("Premature end of suggestion stream", ex);
+            throw new SuggestionParseException("Premature end of suggestion stream", ex);
         }
     }
 }
