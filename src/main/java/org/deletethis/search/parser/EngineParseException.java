@@ -31,4 +31,8 @@ public class EngineParseException extends Exception {
         super(errorCode.toString(), throwable);
         this.errorCode = errorCode;
     }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
 }
