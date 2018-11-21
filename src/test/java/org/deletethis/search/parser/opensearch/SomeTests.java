@@ -36,7 +36,7 @@ public class SomeTests {
 
         Assert.assertEquals(Optional.of("https://mycroftproject.com/updateos.php/id0/googleintl.xml"), google.getUpdateUrl());
         Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchUrl(SearchQuery.of("hello world")));
-        Assert.assertTrue(google.getIconUrls().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
+        Assert.assertTrue(google.getIconAddress().get().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
         Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestions(SearchQuery.of("hello world")).getUri());
     }
 

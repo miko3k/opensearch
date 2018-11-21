@@ -1,5 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
+import org.deletethis.search.parser.AddressList;
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
 
@@ -132,7 +133,7 @@ class OpenSearchParser implements ElementParser {
                 contact,
                 tags,
                 longName,
-                images,
+                images.isEmpty() ? null : new AddressList(images),
                 developer,
                 attribution,
                 adultContent,

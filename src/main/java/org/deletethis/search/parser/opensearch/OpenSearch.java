@@ -19,7 +19,7 @@ class OpenSearch implements SearchEngine {
     private final String contact;
     private final List<String> tags;
     private final String longName;
-    private final List<String> images;
+    private final AddressList images;
     private final String developer;
     private final String attribution;
     private final Boolean adultContent;
@@ -29,7 +29,7 @@ class OpenSearch implements SearchEngine {
     private transient Map<PropertyName, PropertyValue> cachedProperties;
 
 
-    public OpenSearch(String shortName, String description, Template selfUrl, Template resultsUrl, Template suggestionsUrl, String contact, List<String> tags, String longName, List<String> images, String developer, String attribution, Boolean adultContent, List<String> languages, List<Charset> inputEncodings, List<Charset> outputEncodings) {
+    public OpenSearch(String shortName, String description, Template selfUrl, Template resultsUrl, Template suggestionsUrl, String contact, List<String> tags, String longName, AddressList images, String developer, String attribution, Boolean adultContent, List<String> languages, List<Charset> inputEncodings, List<Charset> outputEncodings) {
         if(inputEncodings.isEmpty() || outputEncodings.isEmpty())
             throw new IllegalArgumentException();
 
@@ -41,7 +41,7 @@ class OpenSearch implements SearchEngine {
         this.contact = contact;
         this.tags = tags;
         this.longName = longName;
-        this.images = Objects.requireNonNull(images);
+        this.images = images;
         this.developer = developer;
         this.attribution = attribution;
         this.adultContent = adultContent;
@@ -104,8 +104,8 @@ class OpenSearch implements SearchEngine {
     }
 
     @Override
-    public List<String> getIconUrls() {
-        return images;
+    public Optional<AddressList> getIconAddress() {
+        return Optional.ofNullable(images);
     }
 
 

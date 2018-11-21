@@ -16,7 +16,7 @@ public class Main {
         SearchEngine searchEngine = OpenSearchFactory.loadOpenSearch(is);
 
         System.out.println("Name: " + searchEngine.getName());
-        System.out.println("Icons: " + searchEngine.getIconUrls());
+        System.out.println("Icons: " + searchEngine.getIconAddress());
         System.out.println("Update URL: " + searchEngine.getUpdateUrl());
         System.out.println(searchEngine.getSearchUrl(SearchQuery.of("hello world")));
         SuggestionRequest suggestion = searchEngine.getSuggestions(SearchQuery.of("hello world"));
