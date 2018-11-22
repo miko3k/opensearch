@@ -162,7 +162,7 @@ class OpenSearch implements SearchEngine {
         if(description != null)
             result.put(PropertyName.DESCRIPTION, new PropertyValue.Literal(description));
         if(contact != null)
-            result.put(PropertyName.CONTACT, new PropertyValue.Literal(contact));
+            result.put(PropertyName.CONTACT, new PropertyValue.Url("mailto:" + contact, contact));
         if(developer != null)
             result.put(PropertyName.DEVELOPER, new PropertyValue.Literal(developer));
         if(attribution != null)

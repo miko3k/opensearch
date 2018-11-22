@@ -22,7 +22,7 @@ class TextParser implements ElementParser {
 
     @Override
     public void endElement() throws EngineParseException {
-        consumer.accept(bld.toString());
+        consumer.accept(bld.toString().trim().replaceAll("\\s+", " "));
 
     }
 
