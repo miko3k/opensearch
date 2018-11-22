@@ -5,5 +5,5 @@ public enum ErrorCode {
     BAD_SYNTAX,
     USAGE_NOT_ALLOWED,
     NO_URL,
-    INVALID_METHOD;
+    INVALID_METHOD
 }

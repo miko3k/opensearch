@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <!-- Created on Fri, 10 Feb 2012 07:26:01 GMT -->
+    <ShortName>Startpage</ShortName>
+    <Description>startpage.com search (no specific mirror)</Description>
+    <Url type="text/html" method="post" template="https://startpage.com/do/search">
+        <Param name="cat" value="web"/>
+        <Param name="query" value="{searchTerms}"/>
+    </Url>
+    <Image width="16" height="16">https://mycroftproject.com/updateos.php/id0/startpage.ico</Image>
+    <Developer>LaurentD</Developer>
+    <InputEncoding>UTF-8</InputEncoding>
+    <moz:SearchForm>https://startpage.com</moz:SearchForm>
+    <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/startpage.xml"/>
+</OpenSearchDescription>

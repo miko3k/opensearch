@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <!-- Created on Sun, 22 Apr 2018 21:44:48 GMT -->
+    <ShortName>DuckDuckGo (POST|No Filter Or Ads|NewTab|Default)</ShortName>
+    <Description>DuckDuckGo (SSL Enabled, POST Instead Of GET, No Safe Filter Or Ads, Opens Results new tab, Default Theme, Metric, Google Maps)</Description>
+    <Url type="text/html" method="post" template="https://duckduckgo.com/?kd=-1&amp;kae=-1&amp;kp=-2&amp;kn=1&amp;kg=p&amp;kl=wt-wt&amp;kad=en_US&amp;k1=-1&amp;kaj=m&amp;kak=-1&amp;kam=google-maps">
+        <Param name="kd" value="-1"/>
+        <Param name="kae" value="-1"/>
+        <Param name="kp" value="-2"/>
+        <Param name="kn" value="1"/>
+        <Param name="kg" value="p"/>
+        <Param name="kl" value="wt-wt"/>
+        <Param name="kad" value="en_US"/>
+        <Param name="k1" value="-1"/>
+        <Param name="kaj" value="m"/>
+        <Param name="kak" value="-1"/>
+        <Param name="kam" value="google-maps"/>
+        <Param name="q" value="{searchTerms}"/>
+    </Url>
+    <Url type="application/x-suggestions+json" template="https://ac.duckduckgo.com/ac/?q={searchTerms}&amp;type=list"/>
+    <Image width="16" height="16">https://mycroftproject.com/updateos.php/id0/ddg_0ad_tab_m_gm.ico</Image>
+    <Developer>Anon</Developer>
+    <InputEncoding>UTF-8</InputEncoding>
+    <moz:SearchForm>https://duckduckgo.com/?kd=-1&amp;kae=-1&amp;kp=-2&amp;kn=1&amp;kg=p&amp;kl=wt-wt&amp;kad=en_US&amp;k1=-1&amp;kaj=m&amp;kak=-1&amp;kam=google-maps</moz:SearchForm>
+    <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/ddg_0ad_tab_m_gm.xml"/>
+</OpenSearchDescription>
