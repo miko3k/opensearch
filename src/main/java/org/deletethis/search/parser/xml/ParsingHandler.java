@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.opensearch;
+package org.deletethis.search.parser.xml;
 
 
 import org.deletethis.search.parser.EngineParseException;
@@ -21,7 +21,7 @@ class ParsingHandler extends DefaultHandler {
         }
     };
 
-    ParsingHandler(ElementParser initialElementParser) {
+    public ParsingHandler(ElementParser initialElementParser) {
         this.elementParserStack = new ArrayDeque<>(10);
         this.elementParserStack.addLast(initialElementParser);
     }

@@ -1,6 +1,9 @@
 package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.xml.AttributeResolver;
+import org.deletethis.search.parser.xml.ElementParser;
+import org.deletethis.search.parser.xml.NamespaceResolver;
 
 class TextParser implements ElementParser {
     private final StringBuilder bld = new StringBuilder();
@@ -11,7 +14,7 @@ class TextParser implements ElementParser {
     }
 
 
-    public TextParser(TextConsumer consumer) {
+    TextParser(TextConsumer consumer) {
         this.consumer = consumer;
     }
 

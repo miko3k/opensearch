@@ -3,6 +3,11 @@ package org.deletethis.search.parser.opensearch;
 import org.deletethis.search.parser.AddressList;
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
+import org.deletethis.search.parser.SearchEngine;
+import org.deletethis.search.parser.xml.AttributeResolver;
+import org.deletethis.search.parser.xml.ElementParser;
+import org.deletethis.search.parser.xml.NamespaceResolver;
+import org.deletethis.search.parser.xml.SearchElementParser;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class OpenSearchParser implements ElementParser {
+public class OpenSearchParser implements SearchElementParser {
     private String shortName;
     private String description;
     private Template selfUrl;
@@ -28,6 +33,7 @@ class OpenSearchParser implements ElementParser {
     private List<Charset> inputEncodings = new ArrayList<>();
     private List<Charset> outputEncodings = new ArrayList<>();
     private boolean hasNonGet = false;
+
 
     private boolean isMediaTypeOneOf(String mediaType, String ... options) {
         for(String o: options) {
@@ -50,7 +56,7 @@ class OpenSearchParser implements ElementParser {
     private ElementParser url(AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
         String type = attributes.getValue("type");
         String rel = attributes.getValue("rel");
-        String method = attributes.getValue(Constants.PARAMETERS_NAMESPACE, "method");
+        String method = attributes.getValue(OpenSearchConstants.PARAMETERS_NAMESPACE, "method");
 
         if(method == null) {
             // also allow method without namespace
@@ -87,7 +93,7 @@ class OpenSearchParser implements ElementParser {
 
     @Override
     public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
-        if(!namespace.equals(Constants.MAIN_NAMESPACE))
+        if(!namespace.equals(OpenSearchConstants.MAIN_NAMESPACE))
             return NOP;
 
         switch (localName) {
@@ -112,7 +118,8 @@ class OpenSearchParser implements ElementParser {
         }
     }
 
-    OpenSearch getOpenSearch() throws EngineParseException {
+    @Override
+    public SearchEngine toSearchEngine(byte[] originalSource) throws EngineParseException {
         if(resultsUrl == null) {
             if(hasNonGet) {
                 throw new EngineParseException(ErrorCode.INVALID_METHOD, "Unsupported method, only GET is supported");
@@ -125,6 +132,7 @@ class OpenSearchParser implements ElementParser {
         if(outputEncodings.isEmpty()) outputEncodings.add(StandardCharsets.UTF_8);
 
         return new OpenSearch(
+                originalSource,
                 shortName,
                 description,
                 selfUrl,

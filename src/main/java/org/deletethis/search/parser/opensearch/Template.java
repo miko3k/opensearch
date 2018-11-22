@@ -2,6 +2,7 @@ package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
+import org.deletethis.search.parser.xml.NamespaceResolver;
 
 import javax.xml.namespace.QName;
 import java.io.UnsupportedEncodingException;

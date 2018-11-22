@@ -5,12 +5,17 @@ import org.deletethis.search.parser.*;
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonParser;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 class OpenSearch implements SearchEngine {
     private static JsonProvider jsonProvider;
 
+    private final byte [] source;
+    private final String identifier;
     private final String shortName;
     private final String description;
     private final Template selfUrl;
@@ -29,10 +34,12 @@ class OpenSearch implements SearchEngine {
     private transient Map<PropertyName, PropertyValue> cachedProperties;
 
 
-    public OpenSearch(String shortName, String description, Template selfUrl, Template resultsUrl, Template suggestionsUrl, String contact, List<String> tags, String longName, AddressList images, String developer, String attribution, Boolean adultContent, List<String> languages, List<Charset> inputEncodings, List<Charset> outputEncodings) {
+    public OpenSearch(byte [] source, String shortName, String description, Template selfUrl, Template resultsUrl, Template suggestionsUrl, String contact, List<String> tags, String longName, AddressList images, String developer, String attribution, Boolean adultContent, List<String> languages, List<Charset> inputEncodings, List<Charset> outputEncodings) {
         if(inputEncodings.isEmpty() || outputEncodings.isEmpty())
             throw new IllegalArgumentException();
 
+        this.source = Objects.requireNonNull(source);
+        this.identifier = sha1(source);
         this.shortName = Objects.requireNonNull(shortName);
         this.description = description;
         this.selfUrl = selfUrl;
@@ -50,10 +57,24 @@ class OpenSearch implements SearchEngine {
         this.outputEncodings = outputEncodings;
     }
 
+    private static String sha1(final byte[] bytes) {
+        try
+        {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            byte[] digest = crypt.digest(bytes);
+            return String.format("%x", new BigInteger(1, digest));
+        }
+        catch(NoSuchAlgorithmException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
     @Override
     public String toString() {
         return "OpenSearch{" +
-                "shortName='" + shortName + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", shortName='" + shortName + '\'' +
                 ", description='" + description + '\'' +
                 ", selfUrl=" + selfUrl +
                 ", resultsUrl=" + resultsUrl +
@@ -181,4 +202,18 @@ class OpenSearch implements SearchEngine {
         return cachedProperties;
     }
 
+    @Override
+    public String getIdentifier() {
+        return null;
+    }
+
+    @Override
+    public byte[] serialize() {
+        return source;
+    }
+
+    @Override
+    public SearchEnginePatch patch() {
+        return new SearchEnginePatch().searchEngine(this);
+    }
 }

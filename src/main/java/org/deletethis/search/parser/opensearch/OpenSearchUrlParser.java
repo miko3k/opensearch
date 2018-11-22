@@ -2,6 +2,9 @@ package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
+import org.deletethis.search.parser.xml.AttributeResolver;
+import org.deletethis.search.parser.xml.ElementParser;
+import org.deletethis.search.parser.xml.NamespaceResolver;
 
 import javax.xml.namespace.QName;
 import java.util.function.Consumer;
@@ -17,7 +20,7 @@ class OpenSearchUrlParser implements ElementParser {
     private final Function<QName, Evaluable> paramResolver = new Function<QName, Evaluable>() {
         @Override
         public Evaluable apply(QName qName) {
-            if(qName.getNamespaceURI().isEmpty() || qName.getNamespaceURI().equals(Constants.MAIN_NAMESPACE)) {
+            if(qName.getNamespaceURI().isEmpty() || qName.getNamespaceURI().equals(OpenSearchConstants.MAIN_NAMESPACE)) {
                 switch (qName.getLocalPart()) {
                     case "searchTerms": return EvaluationContext::getSearchTerms;
                     case "count": return Evaluable.of("50");
@@ -29,7 +32,7 @@ class OpenSearchUrlParser implements ElementParser {
                     default: return null;
                 }
             }
-            if(qName.getNamespaceURI().equals(Constants.PARAMETERS_NAMESPACE)) {
+            if(qName.getNamespaceURI().equals(OpenSearchConstants.PARAMETERS_NAMESPACE)) {
                 switch (qName.getLocalPart()) {
                     case "suggestionPrefix": return EvaluationContext::getSuggestionPrefix;
                     case "suggestionIndex": return EvaluationContext::getSuggestionIndex;

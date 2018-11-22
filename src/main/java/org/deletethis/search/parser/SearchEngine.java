@@ -11,4 +11,7 @@ public interface SearchEngine {
     boolean supportsSuggestions();
     SuggestionRequest getSuggestions(SearchQuery search);
     Map<PropertyName, PropertyValue> getProperties();
+    String getIdentifier();
+    byte [] serialize();
+    SearchEnginePatch patch();
 }

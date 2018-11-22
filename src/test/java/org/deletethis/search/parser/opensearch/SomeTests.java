@@ -21,14 +21,14 @@ public class SomeTests {
 
     @Test
     public void googleus() throws IOException, EngineParseException {
-        SearchEngine google = OpenSearchFactory.loadOpenSearch(res("google.xml"));
+        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("google.xml"));
 
         Assert.assertEquals("Google US", google.getName());
         Assert.assertTrue(google.supportsSuggestions());
         Map<PropertyName, PropertyValue> properties = google.getProperties();
 
         Assert.assertEquals(new PropertyValue.Literal("Google US"), properties.get(PropertyName.DESCRIPTION));
-        Assert.assertEquals(new PropertyValue.Literal("mycroft.mozdev.org@googlemail.com"), properties.get(PropertyName.CONTACT));
+        Assert.assertEquals(new PropertyValue.Url("mailto:mycroft.mozdev.org@googlemail.com", "mycroft.mozdev.org@googlemail.com"), properties.get(PropertyName.CONTACT));
         Assert.assertNull(properties.get(PropertyName.LONG_NAME));
         Assert.assertEquals(new PropertyValue.Literal("Mycroft Project"), properties.get(PropertyName.DEVELOPER));
         Assert.assertNull(properties.get(PropertyName.ATTRIBUTION));
@@ -38,6 +38,26 @@ public class SomeTests {
         Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchUrl(SearchQuery.of("hello world")));
         Assert.assertTrue(google.getIconAddress().get().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
         Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestions(SearchQuery.of("hello world")).getUri());
+    }
+
+    @Test
+    public void patch() throws IOException, EngineParseException {
+        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("google.xml"));
+        byte[] data = google.serialize();
+        SearchEngine bar = google.patch().name("bar").createSearchEngine();
+        byte[] xx = bar.serialize();
+
+        Assert.assertEquals("bar", bar.getName());
+        Assert.assertNotSame(data, bar.serialize());
+        bar = google.patch().name(null).createSearchEngine();
+        Assert.assertEquals("Google US", bar.getName());
+        Assert.assertSame(data, bar.serialize());
+
+        SearchEngine ee = SearchEngineFactory.loadSearchEngine(xx);
+        Assert.assertEquals("bar", ee.getName());
+        SearchEngine ee2 = ee.patch().name(null).createSearchEngine();
+        byte[] ees = ee2.serialize();
+        Assert.assertArrayEquals(data, ees);
     }
 
     @Test
