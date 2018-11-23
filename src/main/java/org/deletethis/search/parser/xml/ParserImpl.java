@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ParserImpl implements SearchEngineDeserializer{
-    private final Map<QName, SearchElementParser> theMap = new HashMap<>();
+    private final Map<QName, ElementParserFactory<?>> theMap = new HashMap<>();
 
-    public void add(QName name, SearchElementParser parser) {
+    public void add(QName name, ElementParserFactory parser) {
         this.theMap.put(name, parser);
 
     }

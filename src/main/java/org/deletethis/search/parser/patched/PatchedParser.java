@@ -7,11 +7,10 @@ import org.deletethis.search.parser.xml.AttributeResolver;
 import org.deletethis.search.parser.xml.ElementParser;
 import org.deletethis.search.parser.xml.NamespaceResolver;
 import org.deletethis.search.parser.xml.SearchEngineDeserializer;
-import org.deletethis.search.parser.xml.SearchElementParser;
 
 import java.util.Base64;
 
-public class PatchedParser implements SearchElementParser {
+public class PatchedParser implements ElementParser {
     private final SearchEngineDeserializer deserializer;
     private final SearchEnginePatch patch = new SearchEnginePatch();
 
@@ -36,8 +35,7 @@ public class PatchedParser implements SearchElementParser {
         }
     }
 
-    @Override
-    public SearchEngine toSearchEngine(byte[] originalSource)  {
+    public SearchEngine toSearchEngine()  {
         return patch.createSearchEngine();
     }
 }

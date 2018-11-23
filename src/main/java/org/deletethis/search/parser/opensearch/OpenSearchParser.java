@@ -7,7 +7,6 @@ import org.deletethis.search.parser.SearchEngine;
 import org.deletethis.search.parser.xml.AttributeResolver;
 import org.deletethis.search.parser.xml.ElementParser;
 import org.deletethis.search.parser.xml.NamespaceResolver;
-import org.deletethis.search.parser.xml.SearchElementParser;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class OpenSearchParser implements SearchElementParser {
+public class OpenSearchParser implements ElementParser {
     private String shortName;
     private String description;
     private Template selfUrl;
@@ -118,7 +117,6 @@ public class OpenSearchParser implements SearchElementParser {
         }
     }
 
-    @Override
     public SearchEngine toSearchEngine(byte[] originalSource) throws EngineParseException {
         if(resultsUrl == null) {
             if(hasNonGet) {

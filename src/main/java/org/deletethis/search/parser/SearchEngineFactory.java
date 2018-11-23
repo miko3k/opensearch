@@ -5,6 +5,7 @@ import org.deletethis.search.parser.opensearch.OpenSearchParser;
 import org.deletethis.search.parser.patched.PatchedConstants;
 import org.deletethis.search.parser.patched.PatchedParser;
 import org.deletethis.search.parser.xml.ParserImpl;
+import org.deletethis.search.parser.xml.ElementParserFactory;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
@@ -16,8 +17,27 @@ public class SearchEngineFactory {
     private static ParserImpl GLOBAL_PARSER;
     static {
         GLOBAL_PARSER = new ParserImpl();
-        GLOBAL_PARSER.add(new QName(OpenSearchConstants.MAIN_NAMESPACE, "OpenSearchDescription"), new OpenSearchParser());
-        GLOBAL_PARSER.add(new QName(PatchedConstants.NAMESPACE, PatchedConstants.ROOT_ELEMENT), new PatchedParser(GLOBAL_PARSER));
+        GLOBAL_PARSER.add(new QName(OpenSearchConstants.MAIN_NAMESPACE, "OpenSearchDescription"), new ElementParserFactory<OpenSearchParser>() {
+            @Override
+            public OpenSearchParser createElementParser() {
+                return new OpenSearchParser();
+            }
+            @Override
+            public SearchEngine toSearchEngine(OpenSearchParser elementParser, byte[] originalSource) throws EngineParseException {
+                return elementParser.toSearchEngine(originalSource);
+            }
+        });
+        GLOBAL_PARSER.add(new QName(PatchedConstants.NAMESPACE, PatchedConstants.ROOT_ELEMENT), new ElementParserFactory<PatchedParser>() {
+            @Override
+            public PatchedParser createElementParser() {
+                return new PatchedParser(GLOBAL_PARSER);
+            }
+
+            @Override
+            public SearchEngine toSearchEngine(PatchedParser elementParser, byte[] originalSource) throws EngineParseException {
+                return elementParser.toSearchEngine();
+            }
+        });
     }
 
     private SearchEngineFactory() { }

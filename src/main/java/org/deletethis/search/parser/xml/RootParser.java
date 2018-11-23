@@ -8,21 +8,36 @@ import javax.xml.namespace.QName;
 import java.util.Map;
 
 class RootParser implements ElementParser {
-    private final Map<QName, SearchElementParser> theMap;
-    private SearchElementParser selectedParser;
+    private final Map<QName, ElementParserFactory<?>> theMap;
 
-    RootParser(Map<QName, SearchElementParser> theMap) {
+    private static class SelectedParser<T extends ElementParser> {
+        ElementParserFactory<T> elementParserFactory;
+        T elementParser;
+
+        SelectedParser(ElementParserFactory<T> elementParserFactory) {
+            this.elementParserFactory = elementParserFactory;
+            this.elementParser = elementParserFactory.createElementParser();
+        }
+
+        SearchEngine toSearchEngine(byte[] originalSource) throws EngineParseException {
+            return elementParserFactory.toSearchEngine(elementParser, originalSource);
+        }
+    }
+
+    private SelectedParser<?> selectedParser;
+
+    RootParser(Map<QName, ElementParserFactory<?>> theMap) {
         this.theMap = theMap;
     }
 
     @Override
     public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
-        SearchElementParser searchElementParser = theMap.get(new QName(namespace, localName));
-        if(searchElementParser == null) {
+        ElementParserFactory<?> elementParserFactory = theMap.get(new QName(namespace, localName));
+        if(elementParserFactory == null) {
             throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Root element is {" + namespace + "}" + localName);
         }
-        selectedParser = searchElementParser;
-        return searchElementParser;
+        selectedParser = new SelectedParser<>(elementParserFactory);
+        return selectedParser.elementParser;
     }
 
     /**
