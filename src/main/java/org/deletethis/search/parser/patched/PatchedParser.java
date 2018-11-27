@@ -3,12 +3,11 @@ package org.deletethis.search.parser.patched;
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.SearchEngine;
 import org.deletethis.search.parser.SearchEnginePatch;
-import org.deletethis.search.parser.xml.AttributeResolver;
-import org.deletethis.search.parser.xml.ElementParser;
-import org.deletethis.search.parser.xml.NamespaceResolver;
-import org.deletethis.search.parser.xml.SearchEngineDeserializer;
-
-import java.util.Base64;
+import org.deletethis.search.parser.internal.text.TextEncoding;
+import org.deletethis.search.parser.internal.xml.AttributeResolver;
+import org.deletethis.search.parser.internal.xml.ElementParser;
+import org.deletethis.search.parser.internal.xml.NamespaceResolver;
+import org.deletethis.search.parser.internal.xml.SearchEngineDeserializer;
 
 public class PatchedParser implements ElementParser {
     private final SearchEngineDeserializer deserializer;
@@ -19,7 +18,7 @@ public class PatchedParser implements ElementParser {
     }
 
     private void setSource(String source) throws EngineParseException {
-        byte[] bytes = Base64.getDecoder().decode(source);
+        byte[] bytes = TextEncoding.decodeBase64(source);
         patch.searchEngine(deserializer.deserialize(bytes));
     }
 

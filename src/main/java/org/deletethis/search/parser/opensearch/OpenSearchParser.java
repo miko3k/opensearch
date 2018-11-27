@@ -4,9 +4,9 @@ import org.deletethis.search.parser.AddressList;
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
 import org.deletethis.search.parser.SearchEngine;
-import org.deletethis.search.parser.xml.AttributeResolver;
-import org.deletethis.search.parser.xml.ElementParser;
-import org.deletethis.search.parser.xml.NamespaceResolver;
+import org.deletethis.search.parser.internal.xml.AttributeResolver;
+import org.deletethis.search.parser.internal.xml.ElementParser;
+import org.deletethis.search.parser.internal.xml.NamespaceResolver;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

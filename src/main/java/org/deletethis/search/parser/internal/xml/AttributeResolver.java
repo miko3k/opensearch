@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.xml;
+package org.deletethis.search.parser.internal.xml;
 
 /** Wrapper around {@link org.xml.sax.Attributes} to improve testability and readability */
 public interface AttributeResolver {

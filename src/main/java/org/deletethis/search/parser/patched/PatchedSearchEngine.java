@@ -1,27 +1,16 @@
 package org.deletethis.search.parser.patched;
 
-import org.deletethis.search.parser.AddressList;
-import org.deletethis.search.parser.PropertyName;
-import org.deletethis.search.parser.PropertyValue;
-import org.deletethis.search.parser.SearchEngine;
-import org.deletethis.search.parser.SearchEnginePatch;
-import org.deletethis.search.parser.SearchQuery;
-import org.deletethis.search.parser.SuggestionRequest;
+import org.deletethis.search.parser.*;
+import org.deletethis.search.parser.internal.text.TextEncoding;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
 public class PatchedSearchEngine implements SearchEngine {
     private final SearchEngine searchEngine;
     private final String name;
+    private String checksum;
     private final static String NS_PREFIX = "n";
 
     public PatchedSearchEngine(SearchEngine searchEngine, String name) {
@@ -80,7 +69,7 @@ public class PatchedSearchEngine implements SearchEngine {
         if (name != null) {
             writer.writeTextElement(PatchedConstants.NAME_ELEMENT, name);
         }
-        String serialized = Base64.getEncoder().encodeToString(searchEngine.serialize());
+        String serialized = TextEncoding.encodeBase64(searchEngine.serialize());
         writer.writeTextElement(PatchedConstants.SOURCE_ELEMENT, serialized);
         writer.endRoot(PatchedConstants.ROOT_ELEMENT);
         return writer.toByteArray();
@@ -90,5 +79,18 @@ public class PatchedSearchEngine implements SearchEngine {
     public SearchEnginePatch patch() {
         SearchEnginePatch patch = searchEngine.patch();
         return patch.name(name);
+    }
+
+    @Override
+    public String getChecksum() {
+        // synchronization not needed, reference writes are atomic
+        if(checksum == null) {
+            StringBuilder bld = new StringBuilder(1024);
+            bld.append(searchEngine.getChecksum());
+            bld.append("NAME-").append(name);
+            byte[] bytes = bld.toString().getBytes(StandardCharsets.UTF_8);
+            this.checksum = TextEncoding.sha1Sum(bytes);
+        }
+        return checksum;
     }
 }

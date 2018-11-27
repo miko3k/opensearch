@@ -2,9 +2,9 @@ package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.EngineParseException;
 import org.deletethis.search.parser.ErrorCode;
-import org.deletethis.search.parser.xml.AttributeResolver;
-import org.deletethis.search.parser.xml.ElementParser;
-import org.deletethis.search.parser.xml.NamespaceResolver;
+import org.deletethis.search.parser.internal.xml.AttributeResolver;
+import org.deletethis.search.parser.internal.xml.ElementParser;
+import org.deletethis.search.parser.internal.xml.NamespaceResolver;
 
 import javax.xml.namespace.QName;
 import java.util.function.Consumer;

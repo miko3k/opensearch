@@ -4,8 +4,8 @@ import org.deletethis.search.parser.opensearch.OpenSearchConstants;
 import org.deletethis.search.parser.opensearch.OpenSearchParser;
 import org.deletethis.search.parser.patched.PatchedConstants;
 import org.deletethis.search.parser.patched.PatchedParser;
-import org.deletethis.search.parser.xml.ParserImpl;
-import org.deletethis.search.parser.xml.ElementParserFactory;
+import org.deletethis.search.parser.internal.xml.ParserImpl;
+import org.deletethis.search.parser.internal.xml.ElementParserFactory;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;

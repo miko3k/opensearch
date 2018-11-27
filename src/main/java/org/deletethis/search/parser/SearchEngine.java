@@ -12,6 +12,7 @@ public interface SearchEngine {
     SuggestionRequest getSuggestions(SearchQuery search);
     Map<PropertyName, PropertyValue> getProperties();
     String getIdentifier();
+    String getChecksum();
     byte [] serialize();
     SearchEnginePatch patch();
 }
