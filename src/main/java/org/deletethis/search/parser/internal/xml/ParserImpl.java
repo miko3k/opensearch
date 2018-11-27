@@ -20,7 +20,7 @@ import java.util.Objects;
 public class ParserImpl implements SearchEngineDeserializer{
     private final Map<QName, ElementParserFactory<?>> theMap = new HashMap<>();
 
-    public void add(QName name, ElementParserFactory parser) {
+    public void add(QName name, ElementParserFactory<?> parser) {
         this.theMap.put(name, parser);
 
     }

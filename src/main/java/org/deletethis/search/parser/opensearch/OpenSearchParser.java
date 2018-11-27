@@ -112,7 +112,7 @@ public class OpenSearchParser implements ElementParser {
             case "Language": return new TextParser((s) -> languages.add(s));
             case "InputEncoding": return new TextParser((s) -> inputEncodings.add(Charset.forName(s)));
             case "OutputEncoding": return new TextParser((s) -> outputEncodings.add(Charset.forName(s)));
-            default: return NOP;
+            default: throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Unknown element: " + localName);
 
         }
     }

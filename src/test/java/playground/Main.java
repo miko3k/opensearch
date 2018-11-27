@@ -23,7 +23,7 @@ public class Main {
         System.out.println(searchEngine.getSearchUrl(SearchQuery.of("hello world")));
         SuggestionRequest suggestion = searchEngine.getSuggestions(SearchQuery.of("hello world"));
 
-        SearchEngine patched = searchEngine.patch().name("Other name").createSearchEngine();
+        SearchEngine patched = searchEngine.patch().name("Other name").attr("a", "b").build();
         System.out.println("Patched name: " + patched.getName());
         System.out.println("Patched: " + new String(patched.serialize(), StandardCharsets.UTF_8));
 

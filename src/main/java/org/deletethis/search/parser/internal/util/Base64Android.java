@@ -1,6 +1,6 @@
-package org.deletethis.search.parser.internal.text;
+package org.deletethis.search.parser.internal.util;
 
-class Base64Android implements Base64Impl {
+class Base64Android implements Base64Provider {
     @Override
     public String encode(byte[] bytes) {
         return android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP);

@@ -1,6 +1,6 @@
-package org.deletethis.search.parser.internal.text;
+package org.deletethis.search.parser.internal.util;
 
-class Base64Jdk implements Base64Impl {
+class Base64Jdk implements Base64Provider {
     @Override
     public String encode(byte[] bytes) {
         return java.util.Base64.getEncoder().encodeToString(bytes);

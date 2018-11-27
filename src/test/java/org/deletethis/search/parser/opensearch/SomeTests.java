@@ -42,22 +42,41 @@ public class SomeTests {
 
     @Test
     public void patch() throws IOException, EngineParseException {
+        String name = "<>&aa";
+
         SearchEngine google = SearchEngineFactory.loadSearchEngine(res("google.xml"));
         byte[] data = google.serialize();
-        SearchEngine bar = google.patch().name("bar").createSearchEngine();
+        SearchEngine bar = google.patch().name(name).build();
         byte[] xx = bar.serialize();
 
-        Assert.assertEquals("bar", bar.getName());
+        Assert.assertEquals(name, bar.getName());
         Assert.assertNotSame(data, bar.serialize());
-        bar = google.patch().name(null).createSearchEngine();
+        bar = google.patch().name(null).build();
         Assert.assertEquals("Google US", bar.getName());
         Assert.assertSame(data, bar.serialize());
 
         SearchEngine ee = SearchEngineFactory.loadSearchEngine(xx);
-        Assert.assertEquals("bar", ee.getName());
-        SearchEngine ee2 = ee.patch().name(null).createSearchEngine();
+        Assert.assertEquals(name, ee.getName());
+        SearchEngine ee2 = ee.patch().name(null).build();
         byte[] ees = ee2.serialize();
         Assert.assertArrayEquals(data, ees);
+    }
+
+    @Test
+    public void patch2() throws IOException, EngineParseException {
+        String name = "<>&aa";
+        String value = "<>&aaXX";
+
+        SearchEngine orig = SearchEngineFactory.loadSearchEngine(res("google.xml"));
+        byte[] origData = orig.serialize();
+        byte[] patchedData = orig.patch().attr(name, value).build().serialize();
+
+        SearchEngine patched = SearchEngineFactory.loadSearchEngine(patchedData);
+        Assert.assertEquals(1, patched.getAttributes().size());
+        Assert.assertEquals(value, patched.getAttributes().get(name));
+
+        byte[] unpachedData = patched.patch().removeAttr(name).build().serialize();
+        Assert.assertArrayEquals(unpachedData, origData);
     }
 
     @Test

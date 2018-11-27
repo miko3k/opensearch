@@ -1,7 +1,7 @@
 package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.*;
-import org.deletethis.search.parser.internal.text.TextEncoding;
+import org.deletethis.search.parser.internal.util.ByteArrays;
 
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonParser;
@@ -37,7 +37,7 @@ class OpenSearch implements SearchEngine {
             throw new IllegalArgumentException();
 
         this.source = Objects.requireNonNull(source);
-        this.identifier = TextEncoding.sha1Sum(source);
+        this.identifier = ByteArrays.sha1Sum(source);
         this.shortName = Objects.requireNonNull(shortName);
         this.description = description;
         this.selfUrl = selfUrl;
@@ -198,12 +198,17 @@ class OpenSearch implements SearchEngine {
     }
 
     @Override
-    public SearchEnginePatch patch() {
-        return new SearchEnginePatch().searchEngine(this);
+    public PatchBuilder patch() {
+        return new PatchBuilder().searchEngine(this);
     }
 
     @Override
     public String getChecksum() {
         return identifier;
+    }
+
+    @Override
+    public Map<String, String> getAttributes() {
+        return Collections.emptyMap();
     }
 }
