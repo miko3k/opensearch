@@ -73,47 +73,17 @@ public class PatchedSearchEngine implements SearchEngine {
         return searchEngine.getIdentifier();
     }
 
-    private void xmlEscapeText(Writer sb, String t) throws IOException {
-        for(int i = 0; i < t.length(); i++){
-            char c = t.charAt(i);
-            switch(c){
-                case '<': sb.append("&lt;"); break;
-                case '>': sb.append("&gt;"); break;
-                case '\"': sb.append("&quot;"); break;
-                case '&': sb.append("&amp;"); break;
-                case '\'': sb.append("&apos;"); break;
-                default: sb.append(c); break;
-            }
-        }
-    }
-
     @Override
     public byte[] serialize() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
-        try(OutputStreamWriter bld = new OutputStreamWriter(out)) {
-
-            // there's no XML writer which works both on Android and Java without external dependencies.
-            // And this XML is very simple!
-
-            bld.write("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n");
-            bld.write("<" + NS_PREFIX + ":" + PatchedConstants.ROOT_ELEMENT + " xmlns:" + NS_PREFIX + "=\"" + PatchedConstants.NAMESPACE + "\">");
-            if (name != null) {
-                bld.write("<" + NS_PREFIX + ":" + PatchedConstants.NAME_ELEMENT + ">");
-                xmlEscapeText(bld, name);
-                bld.write("</" + NS_PREFIX + ":" + PatchedConstants.NAME_ELEMENT + ">");
-            }
-
-            bld.write("<" + NS_PREFIX + ":" + PatchedConstants.SOURCE_ELEMENT + ">");
-            String serialized = Base64.getEncoder().encodeToString(searchEngine.serialize());
-            xmlEscapeText(bld, serialized);
-            bld.write("</" + NS_PREFIX + ":" + PatchedConstants.SOURCE_ELEMENT + ">");
-
-            bld.write("</" + NS_PREFIX + ":" + PatchedConstants.ROOT_ELEMENT + ">");
-        } catch (IOException e) {
-            throw new AssertionError(e);
+        PoorXmlWriter writer = new PoorXmlWriter(NS_PREFIX, PatchedConstants.NAMESPACE);
+        writer.writeRoot(PatchedConstants.ROOT_ELEMENT);
+        if (name != null) {
+            writer.writeTextElement(PatchedConstants.NAME_ELEMENT, name);
         }
-
-        return out.toByteArray();
+        String serialized = Base64.getEncoder().encodeToString(searchEngine.serialize());
+        writer.writeTextElement(PatchedConstants.SOURCE_ELEMENT, serialized);
+        writer.endRoot(PatchedConstants.ROOT_ELEMENT);
+        return writer.toByteArray();
     }
 
     @Override
