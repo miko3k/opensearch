@@ -7,17 +7,11 @@ import java.security.NoSuchAlgorithmException;
 public class ByteArrays {
     private static Base64Provider base64Provider;
     static {
-        boolean onJdk = false;
         try {
             // always prefer java.util version - it's available on JDK and newer Androids
-            Class.forName( "java.util.Base64");
-            onJdk = true;
-        } catch( ClassNotFoundException e ) {
-            // ignore this one
-        }
-        if(onJdk) {
+            Class.forName("java.util.Base64");
             base64Provider = new Base64Jdk();
-        } else {
+        } catch( ClassNotFoundException e ) {
             base64Provider = new Base64Android();
         }
     }
