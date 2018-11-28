@@ -27,25 +27,25 @@ class ParsingHandler extends DefaultHandler {
     }
 
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument()  {
         namespaces = new NamespaceSupport();
     }
 
     @Override
-    public void endDocument() throws SAXException {
+    public void endDocument() {
         if(elementParserStack.size() != 1) {
             throw new AssertionError();
         }
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) {
         ElementParser last = this.elementParserStack.getLast();
         last.text(ch, start, length);
     }
 
     public void startPrefixMapping(String prefix, String uri)
-            throws SAXException {
+             {
 
         if (needNewContext) {
             namespaces.pushContext();
@@ -55,8 +55,7 @@ class ParsingHandler extends DefaultHandler {
 
     }
 
-    public void endPrefixMapping(String prefix)
-            throws SAXException {
+    public void endPrefixMapping(String prefix){
 
         namespaces.popContext();
     }
@@ -78,7 +77,7 @@ class ParsingHandler extends DefaultHandler {
             }
         };
 
-        ElementParser elementParser = null;
+        ElementParser elementParser;
         try {
             elementParser = elementParserStack.getLast().startElement(uri, localName, asr, nsr);
         } catch (EngineParseException e) {

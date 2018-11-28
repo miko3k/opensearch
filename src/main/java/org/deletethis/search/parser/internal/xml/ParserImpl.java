@@ -34,7 +34,8 @@ public class ParserImpl implements SearchEngineDeserializer{
             xmlReader.setContentHandler(new ParsingHandler(initialElementParser));
             xmlReader.parse(new InputSource(new ByteArrayInputStream(is)));
         } catch (SAXException e) {
-            Throwable cause = e.getCause();
+            // NOT getCause, it returns null on Android!!
+            Exception cause = e.getException();
             if(cause instanceof EngineParseException) {
                 EngineParseException c = (EngineParseException) cause;
                 throw new EngineParseException(c.getErrorCode(), c.getMessage(), e);
