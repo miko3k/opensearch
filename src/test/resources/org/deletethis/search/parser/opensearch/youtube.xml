@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <!-- Created by Mycroft Project on Wed, 11 Oct 2006 16:13:40 GMT -->
+    <ShortName>YouTube</ShortName>
+    <Description>YouTube - Videos</Description>
+    <Url type="text/html" method="get" template="https://www.youtube.com/results?search_query={searchTerms}&amp;search=Search"/>
+    <Url type="application/x-suggestions+json" template="https://suggestqueries.google.com/complete/search?output=firefox&amp;ds=yt&amp;q={searchTerms}"/>
+    <Image width="16" height="16">https://mycroftproject.com/updateos.php/id0/youtube.ico</Image>
+    <InputEncoding>UTF-8</InputEncoding>
+    <SearchForm>https://www.youtube.com/index</SearchForm>
+    <Url type="application/opensearchdescription+xml" rel="self" template="https://mycroftproject.com/updateos.php/id0/youtube.xml"/>
+</OpenSearchDescription>

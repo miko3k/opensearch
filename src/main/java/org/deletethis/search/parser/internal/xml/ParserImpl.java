@@ -36,7 +36,8 @@ public class ParserImpl implements SearchEngineDeserializer{
         } catch (SAXException e) {
             Throwable cause = e.getCause();
             if(cause instanceof EngineParseException) {
-                throw (EngineParseException)cause;
+                EngineParseException c = (EngineParseException) cause;
+                throw new EngineParseException(c.getErrorCode(), c.getMessage(), e);
             } else {
                 throw new EngineParseException(ErrorCode.NOT_WELL_FORMED, e);
             }

@@ -117,4 +117,11 @@ public class SomeTests {
         Assert.assertEquals("de", oss.getSuggestionPrefix());
     }
 
+    @Test
+    public void youtube() throws IOException, EngineParseException {
+        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("youtube.xml"));
+
+        Assert.assertEquals("YouTube", google.getName());
+    }
+
 }
