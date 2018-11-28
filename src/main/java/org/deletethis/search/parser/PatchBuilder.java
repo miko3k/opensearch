@@ -1,24 +1,33 @@
 package org.deletethis.search.parser;
 
-import org.deletethis.search.parser.patched.PatchedSearchEngine;
+import org.deletethis.search.parser.patched.PatchedPlugin;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class PatchBuilder {
-    private SearchEngine searchEngine;
+    private SearchPlugin searchPlugin;
     private String name;
-    private Map<String, String> custom = new HashMap<>();
+    private Map<String, String> attr = new HashMap<>();
+    private SearchPluginIcon icon;
 
     public PatchBuilder() {
 
     }
 
-    public PatchBuilder searchEngine(SearchEngine searchEngine) {
-        this.searchEngine = searchEngine;
+    public PatchBuilder plugin(SearchPlugin searchPlugin) {
+        this.searchPlugin = searchPlugin;
         return this;
     }
+
+    public SearchPlugin getPlugin() {
+        return searchPlugin;
+    }
+
 
     public String getName() {
         return name;
@@ -30,33 +39,47 @@ public class PatchBuilder {
     }
 
     public PatchBuilder attr(String name, String value) {
-        custom.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
+        attr.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
         return this;
     }
 
+    public PatchBuilder icon(SearchPluginIcon icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public SearchPluginIcon getIcon() {
+        return icon;
+    }
+
     public PatchBuilder removeAttr(String name) {
-        custom.remove(name);
+        attr.remove(name);
         return this;
     }
 
     public boolean isSomethingPatched() {
-        return name != null || !custom.isEmpty();
+        return name != null || !attr.isEmpty() || icon != null;
     }
 
     public PatchBuilder clear() {
-        custom.clear();
+        attr.clear();
         name(null);
+        icon(null);
         return this;
     }
 
-    public SearchEngine build() {
-        if(searchEngine == null)
-            throw new IllegalStateException("no search engine set");
+    public SearchPlugin build() {
+        if(searchPlugin == null)
+            throw new IllegalStateException("no search plugin set");
 
         if(isSomethingPatched()) {
-            return new PatchedSearchEngine(searchEngine, name, custom);
+            return new PatchedPlugin(this);
         } else {
-            return searchEngine;
+            return searchPlugin;
         }
+    }
+
+    public Map<String, String> getAttributes() {
+        return attr;
     }
 }

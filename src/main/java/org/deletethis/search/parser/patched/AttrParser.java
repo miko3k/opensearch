@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.patched;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.PatchBuilder;
 import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
@@ -17,7 +17,7 @@ public class AttrParser implements ElementParser {
     private String value = null;
 
     @Override
-    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
+    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
         if(!namespace.equals(PatchedConstants.NAMESPACE))
             return NOP;
 
@@ -29,7 +29,7 @@ public class AttrParser implements ElementParser {
     }
 
     @Override
-    public void endElement() throws EngineParseException {
+    public void endElement() throws PluginParseException {
         if(name != null && value != null)
             resultConsumer.attr(name, value);
     }

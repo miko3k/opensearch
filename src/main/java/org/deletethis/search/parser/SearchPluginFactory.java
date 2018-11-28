@@ -2,6 +2,7 @@ package org.deletethis.search.parser;
 
 import org.deletethis.search.parser.opensearch.OpenSearchConstants;
 import org.deletethis.search.parser.opensearch.OpenSearchParser;
+import org.deletethis.search.parser.opensearch.OpenSearchPlugin;
 import org.deletethis.search.parser.patched.PatchedConstants;
 import org.deletethis.search.parser.patched.PatchedParser;
 import org.deletethis.search.parser.internal.xml.ParserImpl;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-public class SearchEngineFactory {
+public class SearchPluginFactory {
     private static ParserImpl GLOBAL_PARSER;
     static {
         GLOBAL_PARSER = new ParserImpl();
@@ -23,8 +24,8 @@ public class SearchEngineFactory {
                 return new OpenSearchParser();
             }
             @Override
-            public SearchEngine toSearchEngine(OpenSearchParser elementParser, byte[] originalSource) throws EngineParseException {
-                return elementParser.toSearchEngine(originalSource);
+            public SearchPlugin createPlugin(OpenSearchParser elementParser, byte[] originalSource) throws PluginParseException {
+                return new OpenSearchPlugin(elementParser, originalSource);
             }
         });
         GLOBAL_PARSER.add(new QName(PatchedConstants.NAMESPACE, PatchedConstants.ROOT_ELEMENT), new ElementParserFactory<PatchedParser>() {
@@ -34,13 +35,13 @@ public class SearchEngineFactory {
             }
 
             @Override
-            public SearchEngine toSearchEngine(PatchedParser elementParser, byte[] originalSource) throws EngineParseException {
-                return elementParser.toSearchEngine();
+            public SearchPlugin createPlugin(PatchedParser elementParser, byte[] originalSource) throws PluginParseException {
+                return elementParser.createPlugin();
             }
         });
     }
 
-    private SearchEngineFactory() { }
+    private SearchPluginFactory() { }
 
     private static byte[] readFully(InputStream inputStream) throws IOException {
 
@@ -54,19 +55,19 @@ public class SearchEngineFactory {
         return buffer.toByteArray();
     }
 
-    public static SearchEngine loadSearchEngine(byte [] bytes) throws EngineParseException {
+    public static SearchPlugin loadSearchPlugin(byte [] bytes) throws PluginParseException {
         Objects.requireNonNull(bytes, "Input array is null");
 
         return GLOBAL_PARSER.deserialize(bytes);
     }
 
-    public static SearchEngine loadSearchEngine(InputStream is) throws IOException, EngineParseException {
+    public static SearchPlugin loadSearchPlugin(InputStream is) throws IOException, PluginParseException {
         // this class should autodetect file format and dispatch to appropriate parser... however,
         // because we support only one format, things are rather simple
 
         Objects.requireNonNull(is, "Input stream is null");
         byte []data = readFully(is);
 
-        return loadSearchEngine(data);
+        return loadSearchPlugin(data);
     }
 }

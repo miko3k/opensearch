@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.internal.xml;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 
 public interface ElementParser {
     ElementParser NOP = new ElementParser() {
@@ -10,7 +10,7 @@ public interface ElementParser {
         }
     };
 
-    ElementParser startElement(String uri, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException;
-    default void endElement() throws EngineParseException { }
+    ElementParser startElement(String uri, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException;
+    default void endElement() throws PluginParseException { }
     default void text(char[] ch, int start, int length) {}
 }

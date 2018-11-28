@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
 import org.deletethis.search.parser.internal.xml.NamespaceResolver;
 
@@ -54,7 +54,7 @@ final class Template implements Evaluable {
      */
     private final static Pattern PATTERN = Pattern.compile("\\{(([-._~a-zA-Z00-9]|(%[0-9a-fA-F]{2})|[!$&'(/)*+,;=]|[:@])*\\??)[}]");
 
-    Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws EngineParseException {
+    Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws PluginParseException {
         this.template = template;
         this.parameters = new ArrayList<>();
 
@@ -76,14 +76,14 @@ final class Template implements Evaluable {
                 ns = namespaceResolver.getURI(prefix);
 
                 if(ns == null) {
-                    throw new EngineParseException(ErrorCode.BAD_SYNTAX, "No namespace is registered with prefix: " + prefix);
+                    throw new PluginParseException(ErrorCode.BAD_SYNTAX, "No namespace is registered with prefix: " + prefix);
                 }
             }
             QName name = new QName(ns, matched);
             Evaluable ev = paramResolver.apply(name);
             if(ev == null) {
                 if(required) {
-                    throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Unknown parameter: " + name);
+                    throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown parameter: " + name);
                 } else {
                     ev = Evaluable.of("");
                 }

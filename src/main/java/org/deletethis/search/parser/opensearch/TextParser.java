@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
 import org.deletethis.search.parser.internal.xml.NamespaceResolver;
@@ -10,7 +10,7 @@ class TextParser implements ElementParser {
     private final TextConsumer consumer;
 
     public interface TextConsumer {
-        void accept(String value) throws EngineParseException;
+        void accept(String value) throws PluginParseException;
     }
 
 
@@ -24,7 +24,7 @@ class TextParser implements ElementParser {
     }
 
     @Override
-    public void endElement() throws EngineParseException {
+    public void endElement() throws PluginParseException {
         consumer.accept(bld.toString().trim().replaceAll("\\s+", " "));
 
     }

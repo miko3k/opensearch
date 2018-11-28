@@ -1,8 +1,8 @@
 package org.deletethis.search.parser.internal.xml;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
-import org.deletethis.search.parser.SearchEngine;
+import org.deletethis.search.parser.SearchPlugin;
 
 import javax.xml.namespace.QName;
 import java.util.Map;
@@ -19,8 +19,8 @@ class RootParser implements ElementParser {
             this.elementParser = elementParserFactory.createElementParser();
         }
 
-        SearchEngine toSearchEngine(byte[] originalSource) throws EngineParseException {
-            return elementParserFactory.toSearchEngine(elementParser, originalSource);
+        SearchPlugin createPlugin(byte[] originalSource) throws PluginParseException {
+            return elementParserFactory.createPlugin(elementParser, originalSource);
         }
     }
 
@@ -31,10 +31,10 @@ class RootParser implements ElementParser {
     }
 
     @Override
-    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws EngineParseException {
+    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
         ElementParserFactory<?> elementParserFactory = theMap.get(new QName(namespace, localName));
         if(elementParserFactory == null) {
-            throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Root element is {" + namespace + "}" + localName);
+            throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Root element is {" + namespace + "}" + localName);
         }
         selectedParser = new SelectedParser<>(elementParserFactory);
         return selectedParser.elementParser;
@@ -43,7 +43,7 @@ class RootParser implements ElementParser {
     /**
      * @param source May or may not be used
      */
-    SearchEngine getSearchEngine(byte [] source) throws EngineParseException {
-        return selectedParser.toSearchEngine(source);
+    SearchPlugin createPlugin(byte [] source) throws PluginParseException {
+        return selectedParser.createPlugin(source);
     }
 }

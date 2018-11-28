@@ -1,6 +1,6 @@
 package org.deletethis.search.parser;
 
-public class EngineParseException extends Exception {
+public class PluginParseException extends Exception {
     private static final long serialVersionUID = 1113211512231569730L;
 
     private final ErrorCode errorCode;
@@ -12,22 +12,22 @@ public class EngineParseException extends Exception {
             return errorCode.toString() + ": " + message;
     }
 
-    public EngineParseException(ErrorCode errorCode) {
+    public PluginParseException(ErrorCode errorCode) {
         super(errorCode.toString());
         this.errorCode = errorCode;
     }
 
-    public EngineParseException(ErrorCode errorCode, String message) {
+    public PluginParseException(ErrorCode errorCode, String message) {
         super(append(errorCode, message));
         this.errorCode = errorCode;
     }
 
-    public EngineParseException(ErrorCode errorCode, String message, Throwable throwable) {
+    public PluginParseException(ErrorCode errorCode, String message, Throwable throwable) {
         super(append(errorCode, message), throwable);
         this.errorCode = errorCode;
     }
 
-    public EngineParseException(ErrorCode errorCode, Throwable throwable) {
+    public PluginParseException(ErrorCode errorCode, Throwable throwable) {
         super(errorCode.toString(), throwable);
         this.errorCode = errorCode;
     }

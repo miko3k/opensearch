@@ -1,8 +1,8 @@
 package org.deletethis.search.parser.internal.xml;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
-import org.deletethis.search.parser.SearchEngine;
+import org.deletethis.search.parser.SearchPlugin;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ParserImpl implements SearchEngineDeserializer{
+public class ParserImpl implements SearchPluginDeserializer {
     private final Map<QName, ElementParserFactory<?>> theMap = new HashMap<>();
 
     public void add(QName name, ElementParserFactory<?> parser) {
@@ -25,7 +25,7 @@ public class ParserImpl implements SearchEngineDeserializer{
 
     }
 
-    private static void parse(byte[] is, ElementParser initialElementParser) throws EngineParseException {
+    private static void parse(byte[] is, ElementParser initialElementParser) throws PluginParseException {
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
@@ -36,11 +36,11 @@ public class ParserImpl implements SearchEngineDeserializer{
         } catch (SAXException e) {
             // NOT getCause, it returns null on Android!!
             Exception cause = e.getException();
-            if(cause instanceof EngineParseException) {
-                EngineParseException c = (EngineParseException) cause;
-                throw new EngineParseException(c.getErrorCode(), c.getMessage(), e);
+            if(cause instanceof PluginParseException) {
+                PluginParseException c = (PluginParseException) cause;
+                throw new PluginParseException(c.getErrorCode(), c.getMessage(), e);
             } else {
-                throw new EngineParseException(ErrorCode.NOT_WELL_FORMED, e);
+                throw new PluginParseException(ErrorCode.NOT_WELL_FORMED, e);
             }
         } catch (ParserConfigurationException | IOException e) {
             // parser should be configured correctly and we are reading byte array,
@@ -50,11 +50,11 @@ public class ParserImpl implements SearchEngineDeserializer{
     }
 
     @Override
-    public SearchEngine deserialize(byte[] bytes) throws EngineParseException {
+    public SearchPlugin deserialize(byte[] bytes) throws PluginParseException {
         Objects.requireNonNull(bytes, "Input stream is null");
 
         RootParser rootParser = new RootParser(theMap);
         parse(bytes, rootParser);
-        return rootParser.getSearchEngine(bytes);
+        return rootParser.createPlugin(bytes);
     }
 }

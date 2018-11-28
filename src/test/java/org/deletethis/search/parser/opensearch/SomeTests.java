@@ -20,8 +20,8 @@ public class SomeTests {
     }
 
     @Test
-    public void googleus() throws IOException, EngineParseException {
-        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("google.xml"));
+    public void googleus() throws IOException, PluginParseException {
+        SearchPlugin google = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
 
         Assert.assertEquals("Google US", google.getName());
         Assert.assertTrue(google.supportsSuggestions());
@@ -36,17 +36,17 @@ public class SomeTests {
 
         Assert.assertEquals(Optional.of("https://mycroftproject.com/updateos.php/id0/googleintl.xml"), google.getUpdateUrl());
         Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchUrl(SearchQuery.of("hello world")));
-        Assert.assertTrue(google.getIconAddress().get().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
+        Assert.assertTrue(google.getIcon().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
         Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestions(SearchQuery.of("hello world")).getUri());
     }
 
     @Test
-    public void patch() throws IOException, EngineParseException {
+    public void patch() throws IOException, PluginParseException {
         String name = "<>&aa";
 
-        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("google.xml"));
+        SearchPlugin google = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
         byte[] data = google.serialize();
-        SearchEngine bar = google.patch().name(name).build();
+        SearchPlugin bar = google.patch().name(name).build();
         byte[] xx = bar.serialize();
 
         Assert.assertEquals(name, bar.getName());
@@ -55,25 +55,26 @@ public class SomeTests {
         Assert.assertEquals("Google US", bar.getName());
         Assert.assertSame(data, bar.serialize());
 
-        SearchEngine ee = SearchEngineFactory.loadSearchEngine(xx);
+        SearchPlugin ee = SearchPluginFactory.loadSearchPlugin(xx);
         Assert.assertEquals(name, ee.getName());
-        SearchEngine ee2 = ee.patch().name(null).build();
+        SearchPlugin ee2 = ee.patch().name(null).build();
         byte[] ees = ee2.serialize();
         Assert.assertArrayEquals(data, ees);
     }
 
     @Test
-    public void patch2() throws IOException, EngineParseException {
+    public void patch2() throws IOException, PluginParseException {
         String name = "<>&aa";
         String value = "<>&aaXX";
 
-        SearchEngine orig = SearchEngineFactory.loadSearchEngine(res("google.xml"));
+        SearchPlugin orig = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
         byte[] origData = orig.serialize();
-        byte[] patchedData = orig.patch().attr(name, value).build().serialize();
+        byte[] patchedData = orig.patch().attr(name, value).icon(SearchPluginIcon.NONE).build().serialize();
 
-        SearchEngine patched = SearchEngineFactory.loadSearchEngine(patchedData);
+        SearchPlugin patched = SearchPluginFactory.loadSearchPlugin(patchedData);
         Assert.assertEquals(1, patched.getAttributes().size());
         Assert.assertEquals(value, patched.getAttributes().get(name));
+        Assert.assertSame(SearchPluginIcon.NONE, patched.getIcon());
 
         byte[] unpachedData = patched.patch().removeAttr(name).build().serialize();
         Assert.assertArrayEquals(unpachedData, origData);
@@ -118,10 +119,11 @@ public class SomeTests {
     }
 
     @Test
-    public void youtube() throws IOException, EngineParseException {
-        SearchEngine google = SearchEngineFactory.loadSearchEngine(res("youtube.xml"));
+    public void youtube() throws IOException, PluginParseException {
+        SearchPlugin plugin = SearchPluginFactory.loadSearchPlugin(res("youtube.xml"));
 
-        Assert.assertEquals("YouTube", google.getName());
+        Assert.assertEquals("YouTube", plugin.getName());
+        Assert.assertEquals(new PropertyValue.Url("https://www.youtube.com/index", "https://www.youtube.com/index"), plugin.getProperties().get(PropertyName.SEARCH_FORM));
     }
 
 }

@@ -5,16 +5,15 @@ import org.deletethis.search.parser.internal.util.ByteArrays;
 import org.deletethis.search.parser.internal.xml.PoorXmlWriter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public class PatchedSearchEngine implements SearchEngine {
-    private final SearchEngine searchEngine;
-    private final String name;
+public class PatchedPlugin implements SearchPlugin {
+    private final SearchPlugin searchPlugin;
     private String checksum;
     private final Map<String, String> attr;
+
+    private final String name;
+    private final SearchPluginIcon icon;
 
     private final static String NS_PREFIX = "n";
     private final static Map<String, String> NSMAP = new HashMap<>();
@@ -22,10 +21,11 @@ public class PatchedSearchEngine implements SearchEngine {
         NSMAP.put(NS_PREFIX, PatchedConstants.NAMESPACE);
     }
 
-    public PatchedSearchEngine(SearchEngine searchEngine, String name, Map<String, String> attr) {
-        this.searchEngine = searchEngine;
-        this.name = name;
-        this.attr = Collections.unmodifiableMap(attr);
+    public PatchedPlugin(PatchBuilder patchBuilder) {
+        this.searchPlugin = Objects.requireNonNull(patchBuilder.getPlugin());
+        this.name = patchBuilder.getName();
+        this.attr = Collections.unmodifiableMap(patchBuilder.getAttributes());
+        this.icon = patchBuilder.getIcon();
     }
 
     @Override
@@ -33,43 +33,47 @@ public class PatchedSearchEngine implements SearchEngine {
         if(name != null) {
             return name;
         } else {
-            return searchEngine.getName();
+            return searchPlugin.getName();
         }
     }
 
     @Override
     public String getSearchUrl(SearchQuery search) {
-        return searchEngine.getSearchUrl(search);
+        return searchPlugin.getSearchUrl(search);
     }
 
     @Override
     public Optional<String> getUpdateUrl() {
-        return searchEngine.getUpdateUrl();
+        return searchPlugin.getUpdateUrl();
     }
 
     @Override
-    public Optional<AddressList> getIconAddress() {
-        return searchEngine.getIconAddress();
+    public SearchPluginIcon getIcon() {
+        if(icon != null) {
+            return icon;
+        } else {
+            return searchPlugin.getIcon();
+        }
     }
 
     @Override
     public boolean supportsSuggestions() {
-        return searchEngine.supportsSuggestions();
+        return searchPlugin.supportsSuggestions();
     }
 
     @Override
     public SuggestionRequest getSuggestions(SearchQuery search) {
-        return searchEngine.getSuggestions(search);
+        return searchPlugin.getSuggestions(search);
     }
 
     @Override
     public Map<PropertyName, PropertyValue> getProperties() {
-        return searchEngine.getProperties();
+        return searchPlugin.getProperties();
     }
 
     @Override
     public String getIdentifier() {
-        return searchEngine.getIdentifier();
+        return searchPlugin.getIdentifier();
     }
 
     @Override
@@ -86,7 +90,14 @@ public class PatchedSearchEngine implements SearchEngine {
             writer.textElement(NS_PREFIX, PatchedConstants.ATTR_VALUE_ELEMENT, e.getValue());
             writer.endElement();
         }
-        String serialized = ByteArrays.encodeBase64(searchEngine.serialize());
+        if(icon != null) {
+            writer.startElement(NS_PREFIX, PatchedConstants.ICON_ELEMENT);
+            for(String s: icon) {
+                writer.textElement(NS_PREFIX, PatchedConstants.ICON_IMAGE_ELEMENT, s);
+            }
+            writer.endElement();
+        }
+        String serialized = ByteArrays.encodeBase64(searchPlugin.serialize());
         writer.textElement(NS_PREFIX, PatchedConstants.SOURCE_ELEMENT, serialized);
         writer.endElement();
         writer.endDocument();
@@ -95,7 +106,7 @@ public class PatchedSearchEngine implements SearchEngine {
 
     @Override
     public PatchBuilder patch() {
-        PatchBuilder patch = searchEngine.patch();
+        PatchBuilder patch = searchPlugin.patch();
         return patch.name(name);
     }
 
@@ -104,11 +115,16 @@ public class PatchedSearchEngine implements SearchEngine {
         // synchronization not needed, reference writes are atomic
         if(checksum == null) {
             StringBuilder bld = new StringBuilder(1024);
-            bld.append(searchEngine.getChecksum());
-            bld.append("-NAME-").append(name);
+            bld.append(searchPlugin.getChecksum());
+            if(name != null) {
+                bld.append("-NAME-").append(name);
+            }
             for (Map.Entry<String, String> e : attr.entrySet()) {
                 bld.append("-A-NAME-").append(e.getKey());
                 bld.append("-A-VALUE-").append(e.getValue());
+            }
+            if(icon != null) {
+                bld.append("-ICON-").append(icon.hashCode());
             }
             byte[] bytes = bld.toString().getBytes(StandardCharsets.UTF_8);
             this.checksum = ByteArrays.sha1Sum(bytes);

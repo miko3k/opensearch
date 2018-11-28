@@ -1,7 +1,7 @@
 package org.deletethis.search.parser.internal.xml;
 
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -80,7 +80,7 @@ class ParsingHandler extends DefaultHandler {
         ElementParser elementParser;
         try {
             elementParser = elementParserStack.getLast().startElement(uri, localName, asr, nsr);
-        } catch (EngineParseException e) {
+        } catch (PluginParseException e) {
             throw new SAXException(e);
         }
         elementParserStack.addLast(elementParser);
@@ -92,7 +92,7 @@ class ParsingHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         try {
             elementParserStack.removeLast().endElement();
-        } catch (EngineParseException e) {
+        } catch (PluginParseException e) {
             throw new SAXException(e);
         }
         super.endElement(uri, localName, qName);

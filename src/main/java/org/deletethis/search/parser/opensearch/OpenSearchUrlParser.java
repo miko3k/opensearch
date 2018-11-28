@@ -1,6 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
-import org.deletethis.search.parser.EngineParseException;
+import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
 import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
@@ -43,7 +43,7 @@ class OpenSearchUrlParser implements ElementParser {
         }
     };
 
-    OpenSearchUrlParser(AttributeResolver attributes, NamespaceResolver namespaces, Consumer<Template> urlConsumer) throws EngineParseException {
+    OpenSearchUrlParser(AttributeResolver attributes, NamespaceResolver namespaces, Consumer<Template> urlConsumer) throws PluginParseException {
         this.urlConsumer = urlConsumer;
         this.namespaceResolver = namespaces;
 
@@ -51,13 +51,13 @@ class OpenSearchUrlParser implements ElementParser {
         this.indexOffset = attributes.getValue("indexOffset");
         this.pageOffset = attributes.getValue("pageOffset");
 
-        if(template == null) throw new EngineParseException(ErrorCode.BAD_SYNTAX, "Url without template");
+        if(template == null) throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Url without template");
         if(indexOffset == null) indexOffset = "1";
         if(pageOffset == null) pageOffset = "1";
     }
 
     @Override
-    public void endElement() throws EngineParseException {
+    public void endElement() throws PluginParseException {
         urlConsumer.accept(new Template(template, namespaceResolver, paramResolver));
     }
 
