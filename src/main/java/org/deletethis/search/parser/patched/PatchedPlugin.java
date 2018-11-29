@@ -4,12 +4,10 @@ import org.deletethis.search.parser.*;
 import org.deletethis.search.parser.internal.util.ByteArrays;
 import org.deletethis.search.parser.internal.xml.PoorXmlWriter;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PatchedPlugin implements SearchPlugin {
     private final SearchPlugin searchPlugin;
-    private String checksumCache;
     private final Map<String, String> attr;
 
     private final String name;
@@ -40,8 +38,13 @@ public class PatchedPlugin implements SearchPlugin {
     }
 
     @Override
-    public String getSearchUrl(SearchQuery search) {
-        return searchPlugin.getSearchUrl(search);
+    public HttpMethod getSearchMethod() {
+        return searchPlugin.getSearchMethod();
+    }
+
+    @Override
+    public Request getSearchRequest(SearchQuery search) {
+        return searchPlugin.getSearchRequest(search);
     }
 
     @Override
@@ -64,8 +67,13 @@ public class PatchedPlugin implements SearchPlugin {
     }
 
     @Override
-    public SuggestionRequest getSuggestions(SearchQuery search) {
-        return searchPlugin.getSuggestions(search);
+    public HttpMethod getSuggestionMethod() {
+        return searchPlugin.getSuggestionMethod();
+    }
+
+    @Override
+    public SuggestionRequest getSuggestionRequest(SearchQuery search) {
+        return searchPlugin.getSuggestionRequest(search);
     }
 
     @Override

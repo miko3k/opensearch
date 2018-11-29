@@ -33,11 +33,12 @@ public class SomeTests {
         Assert.assertEquals(new PropertyValue.Literal("Mycroft Project"), properties.get(PropertyName.DEVELOPER));
         Assert.assertNull(properties.get(PropertyName.ATTRIBUTION));
         Assert.assertNull(properties.get(PropertyName.ADULT_CONTENT));
+        Assert.assertEquals(new PropertyValue.Url("https://www.google.com/ncr", "https://www.google.com/ncr"), properties.get(PropertyName.SEARCH_FORM));
 
         Assert.assertEquals(Optional.of("https://mycroftproject.com/updateos.php/id0/googleintl.xml"), google.getUpdateUrl());
-        Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchUrl(SearchQuery.of("hello world")));
+        Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchRequest(SearchQuery.of("hello world")).getUrl());
         Assert.assertTrue(google.getIcon().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
-        Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestions(SearchQuery.of("hello world")).getUri());
+        Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestionRequest(SearchQuery.of("hello world")).getUrl());
     }
 
     @Test

@@ -104,8 +104,13 @@ public class OpenSearchPlugin implements SearchPlugin {
     }
 
     @Override
-    public String getSearchUrl(SearchQuery search) {
-        return resultsUrl.evaluate(createEvaluation(search));
+    public Request getSearchRequest(SearchQuery search) {
+        return new BasicRequest(resultsUrl.evaluate(createEvaluation(search)));
+    }
+
+    @Override
+    public HttpMethod getSearchMethod() {
+        return HttpMethod.GET;
     }
 
     @Override
@@ -128,6 +133,11 @@ public class OpenSearchPlugin implements SearchPlugin {
         return suggestionsUrl != null;
     }
 
+    @Override
+    public HttpMethod getSuggestionMethod() {
+        return HttpMethod.GET;
+    }
+
     private List<Suggestion> parseSuggestions(String prefix, String body) throws SuggestionParseException {
         if(jsonProvider == null) {
             jsonProvider = JsonProvider.provider();
@@ -145,22 +155,19 @@ public class OpenSearchPlugin implements SearchPlugin {
         }
     }
 
+    abstract private static class BasicRequestSuggestionParser extends BasicRequest implements SuggestionRequest {
+        BasicRequestSuggestionParser(String url) {
+            super(url);
+        }
+    }
+
     @Override
-    public SuggestionRequest getSuggestions(SearchQuery searchQuery) {
+    public SuggestionRequest getSuggestionRequest(SearchQuery searchQuery) {
         if(suggestionsUrl == null) {
             throw new UnsupportedOperationException();
         }
 
-        return new SuggestionRequest() {
-            private String cache;
-            @Override
-            public String getUri() {
-                if(cache == null) {
-                    cache = suggestionsUrl.evaluate(createEvaluation(searchQuery));
-                }
-                return cache;
-            }
-
+        return new BasicRequestSuggestionParser(suggestionsUrl.evaluate(createEvaluation(searchQuery))) {
             @Override
             public List<Suggestion> parseResult(String body) throws SuggestionParseException {
                 return parseSuggestions(searchQuery.getAnyValue(), body);

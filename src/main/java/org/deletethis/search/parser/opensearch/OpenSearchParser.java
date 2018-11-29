@@ -86,11 +86,7 @@ public class OpenSearchParser implements ElementParser {
         }
     }
 
-    @Override
-    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
-        if(!namespace.equals(OpenSearchConstants.MAIN_NAMESPACE))
-            return NOP;
-
+    public ElementParser startElementInMainNamespace(String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
         switch (localName) {
             case "ShortName": return new TextParser((s) -> shortName = s);
             case "Description": return new TextParser((s) -> description = s);
@@ -108,9 +104,32 @@ public class OpenSearchParser implements ElementParser {
             case "Language": return new TextParser((s) -> languages.add(s));
             case "InputEncoding": return new TextParser((s) -> inputEncodings.add(Charset.forName(s)));
             case "OutputEncoding": return new TextParser((s) -> outputEncodings.add(Charset.forName(s)));
+            // youtube on plugin on mycroftproject is using this without moz: prefix
             case "SearchForm": return new TextParser((s) -> searchForm = s);
             default: throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown element: " + localName);
 
+        }
+    }
+
+    public ElementParser startElementInMozNamespace(String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
+        switch (localName) {
+            case "SearchForm": return new TextParser((s) -> searchForm = s);
+            default: throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown element: " + localName);
+
+        }
+    }
+
+    @Override
+    public ElementParser startElement(String namespace, String localName, AttributeResolver attributes, NamespaceResolver namespaces) throws PluginParseException {
+        switch (namespace) {
+            case OpenSearchConstants.MAIN_NAMESPACE:
+                return startElementInMainNamespace(localName, attributes, namespaces);
+
+            case OpenSearchConstants.MOZ_NAMESPACE:
+                return startElementInMozNamespace(localName, attributes, namespaces);
+
+            default:
+                return NOP;
         }
     }
 }

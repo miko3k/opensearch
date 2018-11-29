@@ -5,11 +5,13 @@ import java.util.Optional;
 
 public interface SearchPlugin {
     String getName();
-    String getSearchUrl(SearchQuery search);
+    HttpMethod getSearchMethod();
+    Request getSearchRequest(SearchQuery search);
     Optional<String> getUpdateUrl();
     SearchPluginIcon getIcon();
     boolean supportsSuggestions();
-    SuggestionRequest getSuggestions(SearchQuery search);
+    HttpMethod getSuggestionMethod();
+    SuggestionRequest getSuggestionRequest(SearchQuery search);
     Map<PropertyName, PropertyValue> getProperties();
     String getIdentifier();
 

@@ -20,14 +20,14 @@ public class Main {
         System.out.println("Name: " + searchPlugin.getName());
         System.out.println("Icons: " + searchPlugin.getIcon());
         System.out.println("Update URL: " + searchPlugin.getUpdateUrl());
-        System.out.println(searchPlugin.getSearchUrl(SearchQuery.of("hello world")));
-        SuggestionRequest suggestion = searchPlugin.getSuggestions(SearchQuery.of("hello world"));
+        System.out.println(searchPlugin.getSearchRequest(SearchQuery.of("hello world")));
+        SuggestionRequest suggestion = searchPlugin.getSuggestionRequest(SearchQuery.of("hello world"));
 
         SearchPlugin patched = searchPlugin.patch().name("Other name").attr("a", "b").build();
         System.out.println("Patched name: " + patched.getName());
         System.out.println("Patched: " + new String(patched.serialize(), StandardCharsets.UTF_8));
 
-        System.out.println(suggestion.getUri());
+        System.out.println(suggestion.getUrl());
         System.out.println(suggestion.parseResult("[\"aa\", [\"A\",\"B\"]]"));
     }
 }
