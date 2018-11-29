@@ -69,11 +69,16 @@ public class SomeTests {
 
         SearchPlugin orig = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
         byte[] origData = orig.serialize();
-        byte[] patchedData = orig.patch().attr(name, value).icon(SearchPluginIcon.NONE).build().serialize();
+        byte[] patchedData = orig.patch()
+                .attr(name, value)
+                .icon(SearchPluginIcon.NONE)
+                .identifier("hello")
+                .build().serialize();
 
         SearchPlugin patched = SearchPluginFactory.loadSearchPlugin(patchedData);
         Assert.assertEquals(1, patched.getAttributes().size());
         Assert.assertEquals(value, patched.getAttributes().get(name));
+        Assert.assertEquals("hello", patched.getIdentifier());
         Assert.assertSame(SearchPluginIcon.NONE, patched.getIcon());
 
         byte[] unpachedData = patched.patch().removeAttr(name).build().serialize();

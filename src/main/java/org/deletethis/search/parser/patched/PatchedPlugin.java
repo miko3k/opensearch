@@ -9,11 +9,12 @@ import java.util.*;
 
 public class PatchedPlugin implements SearchPlugin {
     private final SearchPlugin searchPlugin;
-    private String checksum;
+    private String checksumCache;
     private final Map<String, String> attr;
 
     private final String name;
     private final SearchPluginIcon icon;
+    private final String identifier;
 
     private final static String NS_PREFIX = "n";
     private final static Map<String, String> NSMAP = new HashMap<>();
@@ -26,6 +27,7 @@ public class PatchedPlugin implements SearchPlugin {
         this.name = patchBuilder.getName();
         this.attr = Collections.unmodifiableMap(patchBuilder.getAttributes());
         this.icon = patchBuilder.getIcon();
+        this.identifier = patchBuilder.getIdentifier();
     }
 
     @Override
@@ -73,7 +75,11 @@ public class PatchedPlugin implements SearchPlugin {
 
     @Override
     public String getIdentifier() {
-        return searchPlugin.getIdentifier();
+        if(identifier == null) {
+            return searchPlugin.getIdentifier();
+        } else {
+            return identifier;
+        }
     }
 
     @Override
@@ -83,6 +89,9 @@ public class PatchedPlugin implements SearchPlugin {
         writer.startElement(NS_PREFIX, PatchedConstants.ROOT_ELEMENT, NSMAP);
         if (name != null) {
             writer.textElement(NS_PREFIX, PatchedConstants.NAME_ELEMENT, name);
+        }
+        if (identifier != null) {
+            writer.textElement(NS_PREFIX, PatchedConstants.IDENTIFIER_ELEMENT, identifier);
         }
         for (Map.Entry<String, String> e : attr.entrySet()) {
             writer.startElement(NS_PREFIX, PatchedConstants.ATTR_ELEMENT);
@@ -108,28 +117,6 @@ public class PatchedPlugin implements SearchPlugin {
     public PatchBuilder patch() {
         PatchBuilder patch = searchPlugin.patch();
         return patch.name(name);
-    }
-
-    @Override
-    public String getChecksum() {
-        // synchronization not needed, reference writes are atomic
-        if(checksum == null) {
-            StringBuilder bld = new StringBuilder(1024);
-            bld.append(searchPlugin.getChecksum());
-            if(name != null) {
-                bld.append("-NAME-").append(name);
-            }
-            for (Map.Entry<String, String> e : attr.entrySet()) {
-                bld.append("-A-NAME-").append(e.getKey());
-                bld.append("-A-VALUE-").append(e.getValue());
-            }
-            if(icon != null) {
-                bld.append("-ICON-").append(icon.hashCode());
-            }
-            byte[] bytes = bld.toString().getBytes(StandardCharsets.UTF_8);
-            this.checksum = ByteArrays.sha1Sum(bytes);
-        }
-        return checksum;
     }
 
     @Override

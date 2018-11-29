@@ -189,11 +189,6 @@ public class OpenSearchPlugin implements SearchPlugin {
     }
 
     @Override
-    public String getChecksum() {
-        return identifier;
-    }
-
-    @Override
     public Map<String, String> getAttributes() {
         return Collections.emptyMap();
     }

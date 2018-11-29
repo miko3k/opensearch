@@ -8,6 +8,7 @@ public class PatchedConstants {
     static final String ATTR_ELEMENT = "Attr";
     static final String ATTR_VALUE_ELEMENT = "Value";
     static final String ATTR_NAME_ELEMENT = "Name";
+    static final String IDENTIFIER_ELEMENT = "Identifier";
     static final String ICON_ELEMENT = "Icon";
     static final String ICON_IMAGE_ELEMENT = "Image";
 

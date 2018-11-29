@@ -34,6 +34,7 @@ public class PatchedParser implements ElementParser {
         switch (localName) {
             case PatchedConstants.SOURCE_ELEMENT: return new TextParser(this::setSource);
             case PatchedConstants.NAME_ELEMENT: return new TextParser(patch::name);
+            case PatchedConstants.IDENTIFIER_ELEMENT: return new TextParser(patch::identifier);
             case PatchedConstants.ATTR_ELEMENT: return new AttrParser(patch);
             case PatchedConstants.ICON_ELEMENT: return new ElementParser() {
                 List<String> str = new ArrayList<>();

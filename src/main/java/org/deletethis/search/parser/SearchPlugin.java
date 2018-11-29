@@ -11,9 +11,8 @@ public interface SearchPlugin {
     boolean supportsSuggestions();
     SuggestionRequest getSuggestions(SearchQuery search);
     Map<PropertyName, PropertyValue> getProperties();
-
     String getIdentifier();
-    String getChecksum();
+
     byte [] serialize();
     PatchBuilder patch();
     Map<String, String> getAttributes();
