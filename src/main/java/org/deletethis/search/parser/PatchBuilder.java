@@ -15,7 +15,6 @@ public class PatchBuilder {
     private Map<String, String> attr = new HashMap<>();
     private SearchPluginIcon icon;
     private String identifier;
-    private String checksum;
 
     public PatchBuilder() {
 
@@ -37,15 +36,6 @@ public class PatchBuilder {
 
     public PatchBuilder name(String name) {
         this.name = name;
-        return this;
-    }
-
-    public String getChecksum() {
-        return checksum;
-    }
-
-    public PatchBuilder checksum(String checksum) {
-        this.checksum = checksum;
         return this;
     }
 
@@ -79,14 +69,13 @@ public class PatchBuilder {
     }
 
     public boolean isSomethingPatched() {
-        return name != null || !attr.isEmpty() || icon != null || identifier != null || checksum != null;
+        return name != null || !attr.isEmpty() || icon != null || identifier != null;
     }
 
     public PatchBuilder clear() {
         attr.clear();
         name(null);
         icon(null);
-        checksum(null);
         identifier(null);
         return this;
     }

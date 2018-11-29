@@ -21,7 +21,7 @@ public class SomeTests {
 
     @Test
     public void googleus() throws IOException, PluginParseException {
-        SearchPlugin google = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
+        SearchPlugin google = new SearchPluginFactory().loadSearchPlugin(res("google.xml"));
 
         Assert.assertEquals("Google US", google.getName());
         Assert.assertTrue(google.supportsSuggestions());
@@ -45,7 +45,7 @@ public class SomeTests {
     public void patch() throws IOException, PluginParseException {
         String name = "<>&aa";
 
-        SearchPlugin google = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
+        SearchPlugin google = new SearchPluginFactory().loadSearchPlugin(res("google.xml"));
         byte[] data = google.serialize();
         SearchPlugin bar = google.patch().name(name).build();
         byte[] xx = bar.serialize();
@@ -56,7 +56,7 @@ public class SomeTests {
         Assert.assertEquals("Google US", bar.getName());
         Assert.assertSame(data, bar.serialize());
 
-        SearchPlugin ee = SearchPluginFactory.loadSearchPlugin(xx);
+        SearchPlugin ee = new SearchPluginFactory().loadSearchPlugin(xx);
         Assert.assertEquals(name, ee.getName());
         SearchPlugin ee2 = ee.patch().name(null).build();
         byte[] ees = ee2.serialize();
@@ -68,7 +68,7 @@ public class SomeTests {
         String name = "<>&aa";
         String value = "<>&aaXX";
 
-        SearchPlugin orig = SearchPluginFactory.loadSearchPlugin(res("google.xml"));
+        SearchPlugin orig = new SearchPluginFactory().loadSearchPlugin(res("google.xml"));
         byte[] origData = orig.serialize();
         byte[] patchedData = orig.patch()
                 .attr(name, value)
@@ -76,7 +76,7 @@ public class SomeTests {
                 .identifier("hello")
                 .build().serialize();
 
-        SearchPlugin patched = SearchPluginFactory.loadSearchPlugin(patchedData);
+        SearchPlugin patched = new SearchPluginFactory().loadSearchPlugin(patchedData);
         Assert.assertEquals(1, patched.getAttributes().size());
         Assert.assertEquals(value, patched.getAttributes().get(name));
         Assert.assertEquals("hello", patched.getIdentifier());
@@ -126,7 +126,7 @@ public class SomeTests {
 
     @Test
     public void youtube() throws IOException, PluginParseException {
-        SearchPlugin plugin = SearchPluginFactory.loadSearchPlugin(res("youtube.xml"));
+        SearchPlugin plugin = new SearchPluginFactory().loadSearchPlugin(res("youtube.xml"));
 
         Assert.assertEquals("YouTube", plugin.getName());
         Assert.assertEquals(new PropertyValue.Url("https://www.youtube.com/index", "https://www.youtube.com/index"), plugin.getProperties().get(PropertyName.SEARCH_FORM));

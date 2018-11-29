@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class Main {
     public static void main(String[] args) throws IOException, SuggestionParseException, PluginParseException {
         InputStream is = Main.class.getResourceAsStream("/org/deletethis/search/parser/opensearch/google.xml");
-        SearchPlugin searchPlugin = SearchPluginFactory.loadSearchPlugin(is);
+        SearchPlugin searchPlugin = new SearchPluginFactory().loadSearchPlugin(is);
 
         System.out.println("Id: " + searchPlugin.getIdentifier());
         System.out.println("Name: " + searchPlugin.getName());

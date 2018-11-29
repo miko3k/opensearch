@@ -15,8 +15,9 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class SearchPluginFactory {
-    private static ParserImpl GLOBAL_PARSER;
-    static {
+    private ParserImpl GLOBAL_PARSER;
+
+    public SearchPluginFactory() {
         GLOBAL_PARSER = new ParserImpl();
         GLOBAL_PARSER.add(new QName(OpenSearchConstants.MAIN_NAMESPACE, "OpenSearchDescription"), new ElementParserFactory<OpenSearchParser>() {
             @Override
@@ -41,9 +42,7 @@ public class SearchPluginFactory {
         });
     }
 
-    private SearchPluginFactory() { }
-
-    private static byte[] readFully(InputStream inputStream) throws IOException {
+    private byte[] readFully(InputStream inputStream) throws IOException {
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream(1024);
         int nRead;
@@ -55,13 +54,13 @@ public class SearchPluginFactory {
         return buffer.toByteArray();
     }
 
-    public static SearchPlugin loadSearchPlugin(byte [] bytes) throws PluginParseException {
+    public SearchPlugin loadSearchPlugin(byte [] bytes) throws PluginParseException {
         Objects.requireNonNull(bytes, "Input array is null");
 
         return GLOBAL_PARSER.deserialize(bytes);
     }
 
-    public static SearchPlugin loadSearchPlugin(InputStream is) throws IOException, PluginParseException {
+    public SearchPlugin loadSearchPlugin(InputStream is) throws IOException, PluginParseException {
         // this class should autodetect file format and dispatch to appropriate parser... however,
         // because we support only one format, things are rather simple
 
