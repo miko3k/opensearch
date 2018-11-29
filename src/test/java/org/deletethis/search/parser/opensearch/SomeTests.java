@@ -82,7 +82,7 @@ public class SomeTests {
         Assert.assertEquals("hello", patched.getIdentifier());
         Assert.assertSame(SearchPluginIcon.NONE, patched.getIcon());
 
-        byte[] unpachedData = patched.patch().removeAttr(name).build().serialize();
+        byte[] unpachedData = patched.patch().removeAttr(name).icon(null).identifier(null).build().serialize();
         Assert.assertArrayEquals(unpachedData, origData);
     }
 

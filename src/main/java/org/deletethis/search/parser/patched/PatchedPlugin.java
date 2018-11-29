@@ -124,7 +124,14 @@ public class PatchedPlugin implements SearchPlugin {
     @Override
     public PatchBuilder patch() {
         PatchBuilder patch = searchPlugin.patch();
-        return patch.name(name);
+        patch.name(name);
+        patch.identifier(identifier);
+        patch.icon(icon);
+        for(Map.Entry<String, String> a: attr.entrySet()) {
+            patch.attr(a.getKey(), a.getValue());
+        }
+
+        return patch;
     }
 
     @Override
