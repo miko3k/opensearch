@@ -6,8 +6,7 @@ import org.deletethis.search.parser.internal.xml.PoorXmlWriter;
 
 import java.util.*;
 
-public class PatchedPlugin implements SearchPlugin {
-    private final SearchPlugin searchPlugin;
+public class PatchedPlugin extends PluginAdapter {
     private final Map<String, String> attr;
 
     private final String name;
@@ -21,7 +20,8 @@ public class PatchedPlugin implements SearchPlugin {
     }
 
     public PatchedPlugin(PatchBuilder patchBuilder) {
-        this.searchPlugin = Objects.requireNonNull(patchBuilder.getPlugin());
+        super(patchBuilder.getPlugin());
+
         this.name = patchBuilder.getName();
         this.attr = Collections.unmodifiableMap(patchBuilder.getAttributes());
         this.icon = patchBuilder.getIcon();
@@ -33,23 +33,8 @@ public class PatchedPlugin implements SearchPlugin {
         if(name != null) {
             return name;
         } else {
-            return searchPlugin.getName();
+            return target.getName();
         }
-    }
-
-    @Override
-    public HttpMethod getSearchMethod() {
-        return searchPlugin.getSearchMethod();
-    }
-
-    @Override
-    public Request getSearchRequest(SearchQuery search) {
-        return searchPlugin.getSearchRequest(search);
-    }
-
-    @Override
-    public Optional<String> getUpdateUrl() {
-        return searchPlugin.getUpdateUrl();
     }
 
     @Override
@@ -57,34 +42,14 @@ public class PatchedPlugin implements SearchPlugin {
         if(icon != null) {
             return icon;
         } else {
-            return searchPlugin.getIcon();
+            return target.getIcon();
         }
-    }
-
-    @Override
-    public boolean supportsSuggestions() {
-        return searchPlugin.supportsSuggestions();
-    }
-
-    @Override
-    public HttpMethod getSuggestionMethod() {
-        return searchPlugin.getSuggestionMethod();
-    }
-
-    @Override
-    public SuggestionRequest getSuggestionRequest(SearchQuery search) {
-        return searchPlugin.getSuggestionRequest(search);
-    }
-
-    @Override
-    public Map<PropertyName, PropertyValue> getProperties() {
-        return searchPlugin.getProperties();
     }
 
     @Override
     public String getIdentifier() {
         if(identifier == null) {
-            return searchPlugin.getIdentifier();
+            return target.getIdentifier();
         } else {
             return identifier;
         }
@@ -114,7 +79,7 @@ public class PatchedPlugin implements SearchPlugin {
             }
             writer.endElement();
         }
-        String serialized = ByteArrays.encodeBase64(searchPlugin.serialize());
+        String serialized = ByteArrays.encodeBase64(target.serialize());
         writer.textElement(NS_PREFIX, PatchedConstants.SOURCE_ELEMENT, serialized);
         writer.endElement();
         writer.endDocument();
@@ -123,7 +88,7 @@ public class PatchedPlugin implements SearchPlugin {
 
     @Override
     public PatchBuilder patch() {
-        PatchBuilder patch = searchPlugin.patch();
+        PatchBuilder patch = target.patch();
         patch.name(name);
         patch.identifier(identifier);
         patch.icon(icon);

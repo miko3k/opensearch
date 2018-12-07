@@ -10,7 +10,7 @@ import org.xml.sax.helpers.NamespaceSupport;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-class ParsingHandler extends DefaultHandler {
+public class ParsingHandler extends DefaultHandler {
     private NamespaceSupport namespaces;
     private boolean needNewContext = true;
     private Deque<ElementParser> elementParserStack;

@@ -3,6 +3,7 @@ package org.deletethis.search.parser.internal.xml;
 import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
 import org.deletethis.search.parser.SearchPlugin;
+import org.deletethis.search.parser.SearchPluginDeserializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -13,16 +14,13 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class ParserImpl implements SearchPluginDeserializer {
-    private final Map<QName, ElementParserFactory<?>> theMap = new HashMap<>();
+public class XmlSearchPluginDeserializer implements SearchPluginDeserializer {
+    private final List<ElementParserFactory<?>> list;
 
-    public void add(QName name, ElementParserFactory<?> parser) {
-        this.theMap.put(name, parser);
-
+    public XmlSearchPluginDeserializer(ElementParserFactory<?> ... elementParserFactories) {
+        this.list = Arrays.asList(elementParserFactories);
     }
 
     private static void parse(byte[] is, ElementParser initialElementParser) throws PluginParseException {
@@ -50,10 +48,10 @@ public class ParserImpl implements SearchPluginDeserializer {
     }
 
     @Override
-    public SearchPlugin deserialize(byte[] bytes) throws PluginParseException {
+    final public SearchPlugin loadSearchPlugin(byte[] bytes) throws PluginParseException {
         Objects.requireNonNull(bytes, "Input stream is null");
 
-        RootParser rootParser = new RootParser(theMap);
+        RootParser rootParser = new RootParser(list);
         parse(bytes, rootParser);
         return rootParser.createPlugin(bytes);
     }

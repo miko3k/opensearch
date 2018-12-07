@@ -8,7 +8,7 @@ import org.deletethis.search.parser.internal.util.ByteArrays;
 import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
 import org.deletethis.search.parser.internal.xml.NamespaceResolver;
-import org.deletethis.search.parser.internal.xml.SearchPluginDeserializer;
+import org.deletethis.search.parser.SearchPluginDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class PatchedParser implements ElementParser {
 
     private void setSource(String source) throws PluginParseException {
         byte[] bytes = ByteArrays.decodeBase64(source);
-        patch.plugin(deserializer.deserialize(bytes));
+        patch.plugin(deserializer.loadSearchPlugin(bytes));
     }
 
     @Override

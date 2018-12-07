@@ -1,8 +1,8 @@
-package org.deletethis.search.parser.internal.xml;
+package org.deletethis.search.parser;
 
 import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.SearchPlugin;
 
 public interface SearchPluginDeserializer {
-    SearchPlugin deserialize(byte [] bytes) throws PluginParseException;
+    SearchPlugin loadSearchPlugin(byte [] bytes) throws PluginParseException;
 }
