@@ -2,20 +2,20 @@ package org.deletethis.search.parser;
 
 import java.util.*;
 
-final public class SearchPluginIcon extends AbstractList<String> {
+final public class UrlIconAddress extends AbstractList<String> implements IconAddress  {
     private List<String> urls;
 
-    public static final SearchPluginIcon NONE = new SearchPluginIcon(Collections.emptyList());
+    public static final UrlIconAddress NONE = new UrlIconAddress(Collections.emptyList());
 
-    private SearchPluginIcon(List<String> urls) {
+    private UrlIconAddress(List<String> urls) {
         this.urls = urls;
     }
 
-    public static SearchPluginIcon of(List<String> urls) {
+    public static UrlIconAddress of(List<String> urls) {
         if(urls.isEmpty()) {
             return NONE;
         } else {
-            return new SearchPluginIcon(new ArrayList<>(urls));
+            return new UrlIconAddress(new ArrayList<>(urls));
         }
     }
 
@@ -32,8 +32,8 @@ final public class SearchPluginIcon extends AbstractList<String> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SearchPluginIcon)) return false;
-        SearchPluginIcon strings = (SearchPluginIcon) o;
+        if (!(o instanceof UrlIconAddress)) return false;
+        UrlIconAddress strings = (UrlIconAddress) o;
         return urls.equals(strings.urls);
     }
 

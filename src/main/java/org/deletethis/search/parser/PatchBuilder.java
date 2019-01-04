@@ -2,18 +2,16 @@ package org.deletethis.search.parser;
 
 import org.deletethis.search.parser.patched.PatchedPlugin;
 
-import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class PatchBuilder {
     private SearchPlugin searchPlugin;
     private String name;
     private Map<String, String> attr = new HashMap<>();
-    private SearchPluginIcon icon;
+    private UrlIconAddress icon;
     private String identifier;
 
     public PatchBuilder() {
@@ -54,12 +52,12 @@ public class PatchBuilder {
         return this;
     }
 
-    public PatchBuilder icon(SearchPluginIcon icon) {
+    public PatchBuilder icon(UrlIconAddress icon) {
         this.icon = icon;
         return this;
     }
 
-    public SearchPluginIcon getIcon() {
+    public UrlIconAddress getIcon() {
         return icon;
     }
 

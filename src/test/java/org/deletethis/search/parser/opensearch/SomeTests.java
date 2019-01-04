@@ -1,5 +1,6 @@
 package org.deletethis.search.parser.opensearch;
 
+import com.google.common.collect.Iterables;
 import org.deletethis.search.parser.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class SomeTests {
 
         Assert.assertEquals(Optional.of("https://mycroftproject.com/updateos.php/id0/googleintl.xml"), google.getUpdateUrl());
         Assert.assertEquals("https://www.google.com/search?name=f&hl=en&q=hello+world", google.getSearchRequest(SearchQuery.of("hello world")).getUrl());
-        Assert.assertTrue(google.getIcon().contains("https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
+        Assert.assertTrue(Iterables.contains(google.getIcon(), "https://mycroftproject.com/updateos.php/id0/googleintl.ico"));
         Assert.assertEquals("https://suggestqueries.google.com/complete/search?output=firefox&client=firefox&hl=en&q=hello+world", google.getSuggestionRequest(SearchQuery.of("hello world")).getUrl());
     }
 
@@ -72,7 +73,7 @@ public class SomeTests {
         byte[] origData = orig.serialize();
         byte[] patchedData = orig.patch()
                 .attr(name, value)
-                .icon(SearchPluginIcon.NONE)
+                .icon(UrlIconAddress.NONE)
                 .identifier("hello")
                 .build().serialize();
 
@@ -80,7 +81,7 @@ public class SomeTests {
         Assert.assertEquals(1, patched.getAttributes().size());
         Assert.assertEquals(value, patched.getAttributes().get(name));
         Assert.assertEquals("hello", patched.getIdentifier());
-        Assert.assertSame(SearchPluginIcon.NONE, patched.getIcon());
+        Assert.assertSame(UrlIconAddress.NONE, patched.getIcon());
 
         byte[] unpachedData = patched.patch().removeAttr(name).icon(null).identifier(null).build().serialize();
         Assert.assertArrayEquals(unpachedData, origData);

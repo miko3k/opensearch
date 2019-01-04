@@ -1,33 +1,18 @@
 package org.deletethis.search.parser.opensearch;
 
-import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.ErrorCode;
-import org.deletethis.search.parser.internal.xml.NamespaceResolver;
+import org.deletethis.search.parser.PluginParseException;
+import org.deletethis.search.parser.util.UrlCharacters;
 
-import javax.xml.namespace.QName;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class Template implements Evaluable {
-    private static class TemplateParameter {
-        private final int begin;
-        private final int end;
-        private final Evaluable value;
 
-        private TemplateParameter(int begin, int end, Evaluable value) {
-            this.begin = begin;
-            this.end = end;
-            this.value = value;
-        }
-    }
-
-    private final String template;
-    private final List<TemplateParameter> parameters;
+    private final List<Evaluable> parts;
 
     /*
      * Syntax:
@@ -54,66 +39,76 @@ final class Template implements Evaluable {
      */
     private final static Pattern PATTERN = Pattern.compile("\\{(([-._~a-zA-Z00-9]|(%[0-9a-fA-F]{2})|[!$&'(/)*+,;=]|[:@])*\\??)[}]");
 
-    Template(String template, NamespaceResolver namespaceResolver, Function<QName, Evaluable> paramResolver) throws PluginParseException {
-        this.template = template;
-        this.parameters = new ArrayList<>();
+    private static class UrlEncoded implements Evaluable {
+        private final Evaluable raw;
+
+        public UrlEncoded(Evaluable raw) {
+            this.raw = raw;
+        }
+
+        @Override
+        public String evaluate(EvaluationContext evaluationContext) {
+            String val = raw.evaluate(evaluationContext);
+            return UrlCharacters.encodeQuery(val, evaluationContext.getOutputEncoding());
+        }
+    }
+
+    private Evaluable createParameter(String pattern, TemplateParamResolver paramResolver) throws PluginParseException {
+        boolean required = true;
+        if(pattern.endsWith("?")) {
+            required = false;
+            pattern = pattern.substring(0, pattern.length()-1);
+        }
+        int index = pattern.indexOf(':');
+        String prefix = null;
+        if(index >= 0) {
+            prefix = pattern.substring(0, index);
+            pattern = pattern.substring(index+1);
+
+        }
+        Evaluable ev = paramResolver.getParameterValue(prefix, pattern);
+        if(ev == null) {
+            if(required) {
+                throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown parameter: " + pattern);
+            } else {
+                ev = Evaluable.of("");
+            }
+        }
+        return new UrlEncoded(ev);
+    }
+
+    private Evaluable createFixed(String str, int begin, int end) {
+        return Evaluable.of(SimpleUrlParser.sanitize(str.substring(begin, end)));
+    }
+
+    Template(String template, TemplateParamResolver paramResolver) throws PluginParseException {
+        this.parts = new ArrayList<>();
 
         Matcher matcher = PATTERN.matcher(template);
+        int last = 0;
+
         while(matcher.find()) {
-
-            boolean required = true;
             String matched = matcher.group(1);
-            if(matched.endsWith("?")) {
-                required = false;
-                matched = matched.substring(0, matched.length()-1);
-            }
-            int index = matched.indexOf(':');
-            String ns = null;
-            if(index >= 0) {
-                String prefix = matched.substring(0, index);
-                matched = matched.substring(index+1);
 
-                ns = namespaceResolver.getURI(prefix);
-
-                if(ns == null) {
-                    throw new PluginParseException(ErrorCode.BAD_SYNTAX, "No namespace is registered with prefix: " + prefix);
-                }
-            }
-            QName name = new QName(ns, matched);
-            Evaluable ev = paramResolver.apply(name);
-            if(ev == null) {
-                if(required) {
-                    throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown parameter: " + name);
-                } else {
-                    ev = Evaluable.of("");
-                }
+            if(last != matcher.start()) {
+                parts.add(createFixed(template, last, matcher.start()));
             }
 
-            this.parameters.add(new TemplateParameter(matcher.start(), matcher.end(), ev));
+            this.parts.add(createParameter(matched, paramResolver));
+
+            last = matcher.end();
+        }
+        if(last < template.length()) {
+            parts.add(createFixed(template, last, template.length()));
         }
     }
 
     @Override
     public String evaluate(EvaluationContext evaluationContext) {
         StringBuilder bld = new StringBuilder();
-        int last = 0;
-        for(TemplateParameter p: parameters) {
-            if(last != p.begin) {
-                bld.append(template, last, p.begin);
-            }
-            String ev = p.value.evaluate(evaluationContext);
-            try {
-                ev = URLEncoder.encode(ev, evaluationContext.getInputEncoding().toString());
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(e);
-            }
-
-            bld.append(ev);
-            last = p.end;
+        for(Evaluable ev: parts) {
+            bld.append(ev.evaluate(evaluationContext));
         }
-        if(last < template.length())
-            bld.append(template, last, template.length());
-
         return bld.toString();
     }
 }

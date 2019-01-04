@@ -32,7 +32,7 @@ public class PluginAdapter implements SearchPlugin {
     }
 
     @Override
-    public SearchPluginIcon getIcon() {
+    public IconAddress getIcon() {
         return target.getIcon();
     }
 

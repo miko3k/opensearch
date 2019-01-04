@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.internal.util;
+package org.deletethis.search.parser.util;
 
 class Base64Android implements Base64Provider {
     @Override

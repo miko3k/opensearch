@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.internal.util;
+package org.deletethis.search.parser.util;
 
 import org.junit.Assert;
 import org.junit.Test;

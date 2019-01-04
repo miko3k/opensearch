@@ -1,7 +1,7 @@
 package org.deletethis.search.parser.patched;
 
 import org.deletethis.search.parser.*;
-import org.deletethis.search.parser.internal.util.ByteArrays;
+import org.deletethis.search.parser.util.ByteArrays;
 import org.deletethis.search.parser.internal.xml.PoorXmlWriter;
 
 import java.util.*;
@@ -10,7 +10,7 @@ public class PatchedPlugin extends PluginAdapter {
     private final Map<String, String> attr;
 
     private final String name;
-    private final SearchPluginIcon icon;
+    private final UrlIconAddress icon;
     private final String identifier;
 
     private final static String NS_PREFIX = "n";
@@ -38,7 +38,7 @@ public class PatchedPlugin extends PluginAdapter {
     }
 
     @Override
-    public SearchPluginIcon getIcon() {
+    public IconAddress getIcon() {
         if(icon != null) {
             return icon;
         } else {

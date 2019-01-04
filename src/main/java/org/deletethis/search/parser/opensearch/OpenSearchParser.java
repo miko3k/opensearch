@@ -94,8 +94,8 @@ public class OpenSearchParser implements ElementParser {
             case "Contact": return new TextParser((s) -> contact = s);
             case "Tags": return NOP;//return new TextParser((s) -> tags.addAll(Arrays.asList(s.split("\\s+"))));
             case "LongName": return new TextParser((s) -> longName = s);
-            // we ignore all the attributes, they are optional so we cannot rely on them ... also .ico can have multiple sizes
-            case "Image": return new TextParser((s) -> images.add(s));
+            // we ignore all the attributes of the Image, they are optional so we cannot rely on them ... also .ico can have multiple sizes
+            case "Image": return new SimpleUrlParser((s) -> images.add(s));
             case "Query": return NOP; // we will just ignore this for now
             case "Developer": return new TextParser((s) -> developer = s);
             case "Attribution": return new TextParser((s) -> attribution = s);
@@ -105,7 +105,7 @@ public class OpenSearchParser implements ElementParser {
             case "InputEncoding": return new TextParser((s) -> inputEncodings.add(Charset.forName(s)));
             case "OutputEncoding": return new TextParser((s) -> outputEncodings.add(Charset.forName(s)));
             // youtube on plugin on mycroftproject is using this without moz: prefix
-            case "SearchForm": return new TextParser((s) -> searchForm = s);
+            case "SearchForm": return new SimpleUrlParser((s) -> searchForm = s);
             default: throw new PluginParseException(ErrorCode.BAD_SYNTAX, "Unknown element: " + localName);
 
         }

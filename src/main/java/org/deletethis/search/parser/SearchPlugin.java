@@ -8,7 +8,7 @@ public interface SearchPlugin {
     HttpMethod getSearchMethod();
     Request getSearchRequest(SearchQuery search);
     Optional<String> getUpdateUrl();
-    SearchPluginIcon getIcon();
+    IconAddress getIcon();
     boolean supportsSuggestions();
     HttpMethod getSuggestionMethod();
     SuggestionRequest getSuggestionRequest(SearchQuery search);

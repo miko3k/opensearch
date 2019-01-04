@@ -1,7 +1,7 @@
 package org.deletethis.search.parser.opensearch;
 
 import org.deletethis.search.parser.*;
-import org.deletethis.search.parser.internal.util.ByteArrays;
+import org.deletethis.search.parser.util.ByteArrays;
 
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonParser;
@@ -16,10 +16,10 @@ public class OpenSearchPlugin implements SearchPlugin {
     private final byte [] source;
     private final String identifier;
     private final String shortName;
-    private final Template selfUrl;
+    private final String selfUrl;
     private final Template resultsUrl;
     private final Template suggestionsUrl;
-    private final SearchPluginIcon images;
+    private final UrlIconAddress images;
     private final List<String> languages;
     private final List<Charset> inputEncodings;
     private final List<Charset> outputEncodings;
@@ -42,12 +42,10 @@ public class OpenSearchPlugin implements SearchPlugin {
         if(outputEncodings.isEmpty()) outputEncodings.add(StandardCharsets.UTF_8);
 
         this.source = Objects.requireNonNull(source);
-        this.identifier = ByteArrays.sha1Sum(source);
         this.shortName = Objects.requireNonNull(p.shortName);
-        this.selfUrl = p.selfUrl;
         this.resultsUrl = Objects.requireNonNull(p.resultsUrl);
         this.suggestionsUrl = p.suggestionsUrl;
-        this.images = SearchPluginIcon.of(p.images);
+        this.images = UrlIconAddress.of(p.images);
 
         Map<PropertyName, PropertyValue> prop = new LinkedHashMap<>();
 
@@ -67,6 +65,17 @@ public class OpenSearchPlugin implements SearchPlugin {
             prop.put(PropertyName.ADULT_CONTENT, p.adultContent ? PropertyValue.Predefined.YES : PropertyValue.Predefined.NO);
 
         this.properties = Collections.unmodifiableMap(prop);
+
+        if(p.selfUrl != null) {
+            this.selfUrl = p.selfUrl.evaluate(createEvaluation("", "", ""));
+        } else {
+            this.selfUrl = null;
+        }
+        if(p.selfUrl != null) {
+            this.identifier = this.selfUrl;
+        } else {
+            this.identifier = ByteArrays.sha1Sum(source);
+        }
     }
 
     @Override
@@ -115,15 +124,11 @@ public class OpenSearchPlugin implements SearchPlugin {
 
     @Override
     public Optional<String> getUpdateUrl() {
-        if(selfUrl == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(selfUrl.evaluate(createEvaluation("", "", "")));
-        }
+        return Optional.ofNullable(selfUrl);
     }
 
     @Override
-    public SearchPluginIcon getIcon() {
+    public UrlIconAddress getIcon() {
         return images;
     }
 

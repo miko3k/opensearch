@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.internal.util;
+package org.deletethis.search.parser.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

@@ -3,8 +3,8 @@ package org.deletethis.search.parser.patched;
 import org.deletethis.search.parser.PluginParseException;
 import org.deletethis.search.parser.SearchPlugin;
 import org.deletethis.search.parser.PatchBuilder;
-import org.deletethis.search.parser.SearchPluginIcon;
-import org.deletethis.search.parser.internal.util.ByteArrays;
+import org.deletethis.search.parser.UrlIconAddress;
+import org.deletethis.search.parser.util.ByteArrays;
 import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
 import org.deletethis.search.parser.internal.xml.NamespaceResolver;
@@ -50,7 +50,7 @@ public class PatchedParser implements ElementParser {
 
                 @Override
                 public void endElement() throws PluginParseException {
-                    patch.icon(SearchPluginIcon.of(str));
+                    patch.icon(UrlIconAddress.of(str));
                 }
             };
             default: return NOP;

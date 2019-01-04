@@ -1,4 +1,4 @@
-package org.deletethis.search.parser.internal.util;
+package org.deletethis.search.parser.util;
 
 interface Base64Provider {
     String encode(byte [] bytes);

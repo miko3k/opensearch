@@ -6,9 +6,7 @@ import org.deletethis.search.parser.internal.xml.AttributeResolver;
 import org.deletethis.search.parser.internal.xml.ElementParser;
 import org.deletethis.search.parser.internal.xml.NamespaceResolver;
 
-import javax.xml.namespace.QName;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 class OpenSearchUrlParser implements ElementParser {
 
@@ -17,11 +15,27 @@ class OpenSearchUrlParser implements ElementParser {
     private String indexOffset;
     private String pageOffset;
     private final NamespaceResolver namespaceResolver;
-    private final Function<QName, Evaluable> paramResolver = new Function<QName, Evaluable>() {
+
+    private final TemplateParamResolver paramResolver = new TemplateParamResolver() {
+        private String resolveNs(String prefix) throws PluginParseException {
+            if(prefix != null) {
+                String ns = namespaceResolver.getURI(prefix);
+
+                if(ns == null) {
+                    throw new PluginParseException(ErrorCode.BAD_SYNTAX, "No namespace is registered with prefix: " + prefix);
+                }
+                return ns;
+            } else {
+                return null;
+            }
+        }
+
         @Override
-        public Evaluable apply(QName qName) {
-            if(qName.getNamespaceURI().isEmpty() || qName.getNamespaceURI().equals(OpenSearchConstants.MAIN_NAMESPACE)) {
-                switch (qName.getLocalPart()) {
+        public Evaluable getParameterValue(String prefix, String localPart) throws PluginParseException {
+            String ns = resolveNs(prefix);
+
+            if(ns == null || ns.equals(OpenSearchConstants.MAIN_NAMESPACE)) {
+                switch (localPart) {
                     case "searchTerms": return EvaluationContext::getSearchTerms;
                     case "count": return Evaluable.of("50");
                     case "startIndex": return indexOffset == null ? null : Evaluable.of(indexOffset);
@@ -32,8 +46,8 @@ class OpenSearchUrlParser implements ElementParser {
                     default: return null;
                 }
             }
-            if(qName.getNamespaceURI().equals(OpenSearchConstants.PARAMETERS_NAMESPACE)) {
-                switch (qName.getLocalPart()) {
+            if(ns.equals(OpenSearchConstants.PARAMETERS_NAMESPACE)) {
+                switch (localPart) {
                     case "suggestionPrefix": return EvaluationContext::getSuggestionPrefix;
                     case "suggestionIndex": return EvaluationContext::getSuggestionIndex;
                     default: return null;
@@ -58,7 +72,7 @@ class OpenSearchUrlParser implements ElementParser {
 
     @Override
     public void endElement() throws PluginParseException {
-        urlConsumer.accept(new Template(template, namespaceResolver, paramResolver));
+        urlConsumer.accept(new Template(template, paramResolver));
     }
 
     @Override
