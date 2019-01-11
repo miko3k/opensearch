@@ -34,4 +34,13 @@ public class SearchQuery {
             return value;
         }
     }
+
+    @Override
+    public String toString() {
+        if(value != null) {
+            return '"' + value + '"';
+        } else {
+            return "[" + suggestion.getValue() + "]";
+        }
+    }
 }
