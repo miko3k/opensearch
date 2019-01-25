@@ -1,9 +1,6 @@
 package org.deletethis.search.parser.internal.xml;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
@@ -15,7 +12,7 @@ import java.util.Map;
  */
 public class PoorXmlWriter {
     private final ByteArrayOutputStream bytes = new ByteArrayOutputStream(2048);
-    private final OutputStreamWriter writer = new OutputStreamWriter(bytes, StandardCharsets.UTF_8);
+    private final Writer writer = new BufferedWriter(new OutputStreamWriter(bytes, StandardCharsets.UTF_8));
     private final Deque<Map.Entry<String, String>> stack = new ArrayDeque<>(10);
 
     public void startDocument() {
